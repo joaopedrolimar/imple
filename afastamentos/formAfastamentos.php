@@ -17,7 +17,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reuniões</title>
+    <title>Afastamentos</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
@@ -38,7 +38,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             text-align: center;
         }
 
-        .inputReunioes {
+        .inputAfastamentos {
             background-color: #fbfbfb;
             width: 408px;
             height: 40px;
@@ -58,7 +58,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             color: white;
         }
 
-        .titulo_reunioes {
+        .titulo_afastamentos {
             background-color: #333;
             padding: 12px;
             border-top-right-radius: 20px;
@@ -73,10 +73,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
 <body>
 
-        
 <nav class="navbar navbar-dark bg-dark fixed-top ">
+
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Intranet </a>
+    <a class="navbar-brand" href="#">
+    <img src="../img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
+    Intranet </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -126,20 +128,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
   </div>
 </nav>
 
-
-
-
-
-
-
-
-
-
-    <div class="container">
+<div class="container">
         <div class="row mt-4">
             <div class="col-lg-12 d-flex justify-content-between align-items-center">
                 <div>
-                    <h4>Reuniões</h4>
+                    <h4>Afastamentos</h4>
                 </div>
             </div>
         </div>
@@ -147,43 +140,43 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         <span id="msgAlerta"></span>
 
-        <!-- Formulario Reuniões -->
+        <!-- Formulário de Afastamentos -->
         <div class="box">
 
-            <h2>Criar Nova Reunião</h2>
+            <h2>Criar Novo Afastamento</h2>
 
             <form id="form" method="POST">
 
                 <div class="inputWrapp">
                     <label for="title">Title</label>
-                    <input type="text" name="title" id="title" class="inputReunioes" required>
+                    <input type="text" name="title" id="title" class="inputAfastamentos" required>
                 </div>
 
                 <p>color:</p>
-                <select name="color" class="inputReunioes" id="color">
-                    <option value="#FFFF00">Laranja</option>
+                <select name="color" class="inputAfastamentos" id="color">
+                    <option value="#0d7909">Verde</option>
                 </select>
 
                 <div class="inputWrapp">
                     <label for="start">Start</label>
-                    <input type="date" name="start" id="start" class="inputReunioes" required>
+                    <input type="date" name="start" id="start" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
                     <label for="end">End</label>
-                    <input type="date" name="end" id="end" class="inputReunioes" required>
+                    <input type="date" name="end" id="end" class="inputAfastamentos" required>
                 </div>
 
                 <button type="submit" class="enviar btn btn-primary">enviar</button>
             </form>
         </div>
 
-        <!-- TABELA de visualizar missões -->
+        <!-- Tabela de Afastamentos -->
         <div class="container ">
             <div class="row mt-4">
                 <div class="col-lg-12">
                     <div>
-                        <h1 class="titulo_reunioes">Tabela Reuniões</h1>
+                        <h1 class="titulo_afastamentos">Tabela Afastamentos</h1>
                     </div>
                 </div>
             </div>
@@ -200,13 +193,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         </div>
 
-        <!-- modal pra visualizar reuniões -->
-
+        <!-- Modal para visualizar afastamento -->
         <div class="modal fade" id="visualizarReunioes" tabindex="-1" aria-labelledby="visualizarReunioes" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="visualizarReunioes">Detalhes Reuniões</h5>
+                        <h5 class="modal-title" id="visualizarReunioes">Detalhes Afastamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -214,7 +206,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                         <dl class="row">
                             <dt class="col-sm-3">ID:</dt>
                             <dd class="col-sm-9"><span id="idId"></span></dd>
-                            <dt class="col-sm-3">Reunião:</dt>
+                            <dt class="col-sm-3">Afastamento:</dt>
                             <dd class="col-sm-9"><span id="idTitle"></span></dd>
                             <dt class="col-sm-3">Cor:</dt>
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
@@ -228,13 +220,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             </div>
         </div>
 
-        <!-- modal pra editar reunião -->
-
+        <!-- Modal para editar afastamento -->
         <div class="modal fade" id="editReunioesModal" tabindex="-1" aria-labelledby="editReunioesModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editReunioesModalLabel">Editar Reunião</h5>
+                        <h5 class="modal-title" id="editReunioesModalLabel">Editar Afastamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -290,7 +281,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 
                 formData.append("add", 1);
 
-                const response = await fetch("cadastrarReunioes.php", {
+                const response = await fetch("cadastrarAfastamentos.php", {
                     method: "POST",
                     body: formData,
                 });
@@ -302,16 +293,16 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             const tbody = document.querySelector(".listar_missions");
 
             const listarMissions = async (pagina) => {
-                const data = await fetch("./tabelaReunioes.php?pagina=" + pagina);
+                const data = await fetch("./tabelaAfastamentos.php?pagina=" + pagina);
                 const resposta = await data.text();
                 tbody.innerHTML = resposta;
             }
 
             listarMissions(1);
 
-            // JavaScript para visualizar reunião da tabela
+            // JavaScript para visualizar afastamento da tabela
             async function visualizarReunioes(id){
-                const data = await fetch("visualizarReunioes.php?id=" + id);
+                const data = await fetch("visualizarAfastamentos.php?id=" + id);
                 const resposta = await data.json();
                 console.log(resposta);
 
@@ -329,13 +320,13 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 }
             }
 
-            // JavaScript para editar reunião
+            // JavaScript para editar afastamento
             async function editReunioes(id){
-                const data = await fetch("visualizarReunioes.php?id=" + id);
+                const data = await fetch("visualizarAfastamentos.php?id=" + id);
                 const resposta = await data.json();
                 
                 if(resposta['erro']){
-                    alert('Erro: Reunião não encontrada');
+                    alert('Erro: Afastamento não encontrado');
                 } else {
                     const editModal = new bootstrap.Modal(document.getElementById("editReunioesModal"));
                     editModal.show();
@@ -352,7 +343,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 const formData = new FormData(editForm);
 
-                const response = await fetch("editReunioes.php", {
+                const response = await fetch("editAfastamentos.php", {
                     method: "POST",
                     body: formData,
                 });
@@ -371,10 +362,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
             // JavaScript para apagar registros
             async function apagarReunioes(id){
-                const confirmar = confirm("Tem certeza que deseja deletar a reunião?");
+                const confirmar = confirm("Tem certeza que deseja deletar o afastamento?");
 
                 if (confirmar == true){
-                    const data = await fetch('apagarReunioes.php?id=' + id);
+                    const data = await fetch('apagarAfastamentos.php?id=' + id);
                     const resposta = await data.json();
                     
                     if(resposta['erro']){
@@ -392,3 +383,4 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 </body>
 
 </html>
+

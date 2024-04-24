@@ -21,7 +21,16 @@ $result_reunioes = $conn->prepare($query_reunioes);
 // Executa a consulta para reuniões
 $result_reunioes->execute();
 
-// Criar o array que receberá os eventos e reuniões
+// Consulta para recuperar os afastamentos
+$query_afastamentos = "SELECT id, title, color, start, end FROM afastamentos";
+
+// Prepara a consulta para afastamentos
+$result_afastamentos = $conn->prepare($query_afastamentos);
+
+// Executa a consulta para afastamentos
+$result_afastamentos->execute();
+
+// Criar o array que receberá os eventos, reuniões e afastamentos
 $eventos = [];
 
 // Percorre os resultados dos eventos
@@ -33,7 +42,7 @@ while($row_events = $result_events->fetch(PDO::FETCH_ASSOC)){
         'color' => $color,
         'start' => $start,
         'end' => $end,
-        'tipo' => 'evento' // Adiciona um campo 'tipo' para distinguir eventos de reuniões
+        'tipo' => 'evento' // Adiciona um campo 'tipo' para distinguir eventos de reuniões e afastamentos
     ];
 }
 
@@ -46,9 +55,22 @@ while($row_reunioes = $result_reunioes->fetch(PDO::FETCH_ASSOC)){
         'color' => $color,
         'start' => $start,
         'end' => $end,
-        'tipo' => 'reuniao' // Adiciona um campo 'tipo' para distinguir eventos de reuniões
+        'tipo' => 'reuniao' // Adiciona um campo 'tipo' para distinguir eventos de reuniões e afastamentos
     ];
 }
 
-// Codifica o array completo de eventos e reuniões como JSON e envia como resposta HTTP
+// Percorre os resultados dos afastamentos
+while($row_afastamentos = $result_afastamentos->fetch(PDO::FETCH_ASSOC)){
+    extract($row_afastamentos);
+    $eventos[] = [
+        'id' => $id,
+        'title' => $title,
+        'color' => $color,
+        'start' => $start,
+        'end' => $end,
+        'tipo' => 'afastamento' // Adiciona um campo 'tipo' para distinguir eventos de reuniões e afastamentos
+    ];
+}
+
+// Codifica o array completo de eventos, reuniões e afastamentos como JSON e envia como resposta HTTP
 echo json_encode($eventos);
