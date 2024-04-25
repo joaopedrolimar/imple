@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("visualizar_title").innerText = info.event.title;
             document.getElementById("visualizar_start").innerText = info.event.start.toLocaleString();
             document.getElementById("visualizar_end").innerText = info.event.end.toLocaleString();
-
             // Abrir a janela modal
             visualizarModal.show();
         }

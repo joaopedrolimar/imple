@@ -2,7 +2,6 @@
 
 include_once "../conexao.php";
 
-
 $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
 $query_usuario = "INSERT INTO events (title, color, start, end) VALUES (:title, :color, :start, :end)";

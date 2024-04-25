@@ -10,7 +10,7 @@ if (!empty($pagina)) {
     $qnt_afastamentos_pg = 10; // Quantidade de afastamentos visualizados por página
     $inicio = ($pagina * $qnt_afastamentos_pg) - $qnt_afastamentos_pg;
 
-    $query_afastamentos = "SELECT id, title, color, start, end FROM afastamentos ORDER BY id ASC LIMIT $inicio, $qnt_afastamentos_pg";
+    $query_afastamentos = "SELECT id, title, color, start, end,nome FROM afastamentos ORDER BY id ASC LIMIT $inicio, $qnt_afastamentos_pg";
     $resultado_afastamentos = $conn->prepare($query_afastamentos);
     $resultado_afastamentos->execute();
 
@@ -23,6 +23,7 @@ if (!empty($pagina)) {
                     <th scope='col'>Cor</th>
                     <th scope='col'>Início</th>
                     <th scope='col'>Fim</th>
+                    <th scope='col'>Nome</th>
                     <th scope='col'>Editar</th>
                 </tr>
             </thead>
@@ -38,6 +39,8 @@ if (!empty($pagina)) {
             <td>$color</td>
             <td>$start</td>
             <td>$end</td>
+            <td>$nome</td>
+            
             <td>
                 <button id='$id' class='btn btn-success btn-sm' onclick ='visualizarReunioes($id)'>Visualizar</button>
                 <button id='$id' class='btn btn-warning btn-sm' onclick ='editReunioes($id)'>Editar</button>

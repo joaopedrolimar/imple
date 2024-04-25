@@ -80,13 +80,20 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 <body>
 
 
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/imple/index.php">
+            <img src="../img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
+            <h1 class="ms-2 mb-0">Intranet</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Restante do seu código -->
+    </div>
+</nav>
 
-<nav class="navbar navbar-dark bg-dark fixed-top ">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Intranet </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Opções</h5>
@@ -175,14 +182,14 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 
                     <div class="inputWrapp">
                         <label for="start"  >Start</label>
-                        <input type="date" name="start" id="start" class="inputUser" required>
+                        <input type="datetime-local" name="start" id="start" class="inputUser" required>
                     </div>
                 
                     
 
                     <div class="inputWrapp">
                         <label for="end">End</label>
-                        <input type="date" name="end" id="end" class="inputUser" required>
+                        <input type="datetime-local" name="end" id="end" class="inputUser" required>
                     </div>
 
                 <button type="submit"  class="enviar btn btn-primary">enviar</button>
@@ -279,14 +286,14 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                          <!--editar data inicio-->
                         <div class="mb-3">
                             <label for="start" class="col-form-label">Início:</label>
-                            <input type="text" name="start" class="form-control" id="editStart"  onfocus="this.type='date'" 
+                            <input type="text" name="start" class="form-control" id="editStart"  onfocus="this.type='datetime-local'" 
                             onblur="if (!this.value) this.type='text'" >
                         </div>
 
                          <!--editar data fianl-->
                          <div class="mb-3">
                             <label for="end" class="col-form-label">Fim:</label>
-                            <input type="text" name="end" class="form-control" id="editEnd"  onfocus="this.type='date'" 
+                            <input type="text" name="end" class="form-control" id="editEnd"  onfocus="this.type='datetime-local'" 
                             onblur="if (!this.value) this.type='text'" >
                         </div>
 

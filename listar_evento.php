@@ -22,7 +22,7 @@ $result_reunioes = $conn->prepare($query_reunioes);
 $result_reunioes->execute();
 
 // Consulta para recuperar os afastamentos
-$query_afastamentos = "SELECT id, title, color, start, end FROM afastamentos";
+$query_afastamentos = "SELECT id, title, color, start, end  FROM afastamentos";
 
 // Prepara a consulta para afastamentos
 $result_afastamentos = $conn->prepare($query_afastamentos);

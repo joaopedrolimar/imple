@@ -32,6 +32,11 @@ $result_notificacoes = $conn->query($query_notificacoes);
 $pedidos_notificacoes = $result_notificacoes->fetchAll(PDO::FETCH_ASSOC);
 
 
+$query_usuarios = "SELECT id, username FROM policiais WHERE aprovado = 1";
+$result_usuarios = $conn->query($query_usuarios);
+$usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
+
+
 
 ?>
 
@@ -43,20 +48,32 @@ $pedidos_notificacoes = $result_notificacoes->fetchAll(PDO::FETCH_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notificações</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
-    <!-- Adicione outros links CSS ou estilos personalizados aqui -->
+
+    <style>
+        .container {
+            margin-top: 70px; /* Adicione uma margem superior para afastar as tabelas do navbar */
+        }
+    </style>
+    
 </head>
 
 <body>
 
 
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/imple/index.php">
+            <img src="../img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
+            <h1 class="ms-2 mb-0">Intranet</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Restante do seu código -->
+    </div>
+</nav>
 
-
-<nav class="navbar navbar-dark bg-dark fixed-top ">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Intranet </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Opções</h5>
@@ -104,6 +121,9 @@ $pedidos_notificacoes = $result_notificacoes->fetchAll(PDO::FETCH_ASSOC);
 </nav>
 
 
+<span id="msgAlerta"></span>
+
+
 
     <!-- Lista de novos usuarios -->
     <div class="container">
@@ -133,8 +153,54 @@ $pedidos_notificacoes = $result_notificacoes->fetchAll(PDO::FETCH_ASSOC);
         </table>
     </div>
 
+    <!-- Tabela de usuários da intranet -->
+    <div class="container mx-auto">
+      <h2>Usuários da Intranet</h2>
+      <table class="table ">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Ações</th>
+              </tr>
+          </thead>
+          <tbody>
+              <?php foreach ($usuarios as $usuario) : ?>
+                  <tr>
+                      <td><?= $usuario['id'] ?></td>
+                      <td><?= $usuario['username'] ?></td>
+                      <td>
+                          <button class="btn btn-danger" onclick="excluirUsuario(<?= $usuario['id'] ?>)">Excluir</button>
+                      </td>
+                  </tr>
+              <?php endforeach; ?>
+          </tbody>
+      </table>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+
+
+    <script>
+      const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
+      async function excluirUsuario(id){
+                const confirmar = confirm("Tem certeza que deseja deletar a reunião?");
+
+                if (confirmar == true){
+                    const data = await fetch('excluir_usuario.php?id=' + id);
+                    const resposta = await data.json();
+                    
+                    if(resposta['erro']){
+                        msgAlerta.innerHTML = resposta['msg'];
+                    } else {
+                        msgAlerta.innerHTML = resposta['msg'];
+                        listarMissions(1);
+                    }
+                }
+            }
+    </script>
 
 
 </body>

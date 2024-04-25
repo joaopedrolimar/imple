@@ -42,13 +42,20 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
 <body>
 
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/imple/index.php">
+            <img src="./img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
+            <h1 class="ms-2 mb-0">Intranet</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Restante do seu código -->
+    </div>
+</nav>
 
-    <nav class="navbar navbar-dark bg-dark fixed-top ">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Intranet </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Opções</h5>
@@ -94,7 +101,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     </div>
   </div>
 </nav>
-
 
    
 
@@ -154,6 +160,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                         <dt class="col-sm-3">Fim: </dt>
                         <dd class="col-sm-9" id="visualizar_end"></dd>
+
+                        <dt class="col-sm-3">Nome: </dt>
+                        <dd class="col-sm-9" id="visualizar_nome"></dd>
+
+                        
 
                     </dl>
 

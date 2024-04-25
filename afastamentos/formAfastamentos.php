@@ -73,15 +73,20 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
 <body>
 
-<nav class="navbar navbar-dark bg-dark fixed-top ">
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a class="navbar-brand d-flex align-items-center" href="/imple/index.php">
+            <img src="../img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
+            <h1 class="ms-2 mb-0">Intranet</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Restante do seu código -->
+    </div>
+</nav>
 
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
-    <img src="../img/censipamLogo2.png" alt="Logo" width=" 80" height="80" class="d-inline-block align-text-top">
-    Intranet </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    
     <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Opções</h5>
@@ -152,6 +157,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <input type="text" name="title" id="title" class="inputAfastamentos" required>
                 </div>
 
+                <div class="inputWrapp">
+                    <label for="nome">Nome</label>
+                    <input type="text" name="nome" id="nome" class="inputAfastamentos" required>
+                </div>
+
+
                 <p>color:</p>
                 <select name="color" class="inputAfastamentos" id="color">
                     <option value="#0d7909">Verde</option>
@@ -159,12 +170,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 <div class="inputWrapp">
                     <label for="start">Start</label>
-                    <input type="date" name="start" id="start" class="inputAfastamentos" required>
+                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
                     <label for="end">End</label>
-                    <input type="date" name="end" id="end" class="inputAfastamentos" required>
+                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
                 </div>
 
                 <button type="submit" class="enviar btn btn-primary">enviar</button>
@@ -212,8 +223,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
                             <dt class="col-sm-3">Início:</dt>
                             <dd class="col-sm-9"><span id="idStart"></span></dd>
-                            <dt class="col-sm-3">Término</dt>
+                            <dt class="col-sm-3">Término:</dt>
                             <dd class="col-sm-9"><span id="idEnd"></span></dd>
+                            <dt class="col-sm-3">Nome:</dt>
+                            <dd class="col-sm-9"><span id="idNome"></span></dd>
                         </dl>
                     </div>
                 </div>
@@ -237,18 +250,23 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <input type="hidden" name="id" id="editid">
 
                             <div class="mb-3">
-                                <label for="nome" class="col-form-label">Título:</label>
+                                <label for="title" class="col-form-label">Título:</label>
                                 <input type="text" name="title" class="form-control" id="editTitle" placeholder="Digite o título">
                             </div>
 
                             <div class="mb-3">
+                                <label for="nome" class="col-form-label">Nome:</label>
+                                <input type="text" name="nome" class="form-control" id="editNome" placeholder="Digite o nome">
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="start" class="col-form-label">Início:</label>
-                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='date'" onblur="if (!this.value) this.type='text'">
+                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
 
                             <div class="mb-3">
                                 <label for="end" class="col-form-label">Fim:</label>
-                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='date'" onblur="if (!this.value) this.type='text'">
+                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
 
                             <div class="modal-footer">
@@ -317,6 +335,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     document.getElementById("idColor").innerHTML = resposta['dados'].color;
                     document.getElementById("idStart").innerHTML = resposta['dados'].start;
                     document.getElementById("idEnd").innerHTML = resposta['dados'].end;
+                    document.getElementById("idNome").innerHTML = resposta['dados'].nome;
                 }
             }
 
@@ -335,6 +354,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     document.getElementById("editTitle").value = resposta['dados'].title;
                     document.getElementById("editStart").value = resposta['dados'].start;
                     document.getElementById("editEnd").value = resposta['dados'].end;
+                    document.getElementById("editNome").value = resposta['dados'].nome;
                 }
             }
 
