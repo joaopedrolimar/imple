@@ -22,46 +22,58 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <style>
-
-        
-
-        .box{
-            margin: 50px 0px 50px 0px;
-            width: 460px; 
-            height: auto;
-            margin: 80px auto;
-            border-radius: 10px;  
-            padding-top: 30px;
-            padding-bottom: 20px;  
-            background: rgba(0, 0, 0, 0.18);
-            padding-left: 30px;
+        .box {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
         }
 
-        .box h2{
+        .box h2 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        
-        .inputUser{
-            background-color: #fbfbfb; 
-            width: 408px; 
-            height: 40px; 
-            border-radius: 10px;  
-            border-style: solid; 
-            border-width: 1px; 
-            border-color: blue;  
-            margin-bottom: 20px; 
+        .box label {
+            font-weight: bold;
+        }
+        #color{
+            font-weight: bold;
         }
 
-        .enviar{
-            height: 45px; 
+        .inputAfastamentos {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 20px;
+            padding: 5px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        .inputWrapp p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .enviar {
+            width: 100%;
+            height: 45px;
             text-transform: uppercase;
-            border-radius: 10px;	
-            width: 420px;   
+            border-radius: 10px;
             cursor: pointer;
-            color: white;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
         }
 
+        .enviar:hover {
+            background-color: #0056b3;
+        }
         .titulo_missions{
             background-color: #333;
             padding: 12px;
@@ -70,6 +82,29 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             letter-spacing: .1em;
             color: white;
             font-family: monospace;
+        }
+        .btn-group-vertical .btn {
+                margin-bottom: 9px; /* Adiciona uma margem entre os botões */
+            }
+
+                /* Estilos para dispositivos móveis */
+                @media (max-width: 768px) {
+            .box {
+                width: 90%;
+                padding: 20px;
+            }
+            .inputAfastamentos {
+                width: 100%;
+            }
+            .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            }
+            .btn-group-vertical .btn {
+                margin-bottom: 9px; /* Adiciona uma margem entre os botões */
+            }
+
+            
         }
 
 
@@ -167,30 +202,48 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <h2>Criar Nova Missão</h2>
 
         <form id="form" method="POST">
+
+
+                <div class="inputWrapp">
+                    <label for="tipo">Tipo de Evento</label>
+                    <input type="text" name="tipo" id="tipo" class="inputAfastamentos" value="Reuniões" readonly>
+                </div>
               
-                    <div class="inputWrapp">
-                    <label for="title">Title</label>
-                        <input type="text" name="title" id="title" class="inputUser" required>
-                    </div>
+                <div class="inputWrapp">
+                    <label for="ord">ORD:</label>
+                    <input type="text" name="ord" id="ord" class="inputAfastamentos" required>
+                </div>
                 
-
-                <p>color:</p>
-                <select name="color" class="inputUser" id="color">
-                    
-                        <option value="#1F438C">azul</option>
+                <p id="color">Color:</p>
+                <select name="color" class="inputAfastamentos" id="color">
+                    <option value="#054F77">Verde</option>
                 </select>
-                
-                    <div class="inputWrapp">
-                        <label for="start"  >Start</label>
-                        <input type="datetime-local" name="start" id="start" class="inputUser" required>
-                    </div>
-                
-                    
 
-                    <div class="inputWrapp">
-                        <label for="end">End</label>
-                        <input type="datetime-local" name="end" id="end" class="inputUser" required>
-                    </div>
+                <div class="inputWrapp">
+                    <label for="start">Início</label>
+                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="end">Término</label>
+                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="motivacao">Motivação</label>
+                    <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="participantes">Participantes</label>
+                    <input type="text" name="participantes" id="participantes" class="inputAfastamentos">
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="funcao">Função</label>
+                    <input type="text" name="funcao" id="funcao" class="inputAfastamentos">
+                </div>
+
 
                 <button type="submit"  class="enviar btn btn-primary">enviar</button>
         </form>
@@ -237,20 +290,33 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <span id="msgAlertaErroVis"></span>
                     <dl class="row">
 
+                        <dt class="col-sm-3">TIPO:</dt>
+                        <dd class="col-sm-9"><span id="idType"></span></dd>
+
                         <dt class="col-sm-3">ID:</dt>
                         <dd class="col-sm-9"><span id="idId"></span></dd>
 
-                        <dt class="col-sm-3">Missão:</dt>
-                        <dd class="col-sm-9"><span id="idTitle"></span></dd>
+                        <dt class="col-sm-3">ORD:</dt>
+                        <dd class="col-sm-9"><span id="idOrd"></span></dd>
 
                         <dt class="col-sm-3">Cor:</dt>
                         <dd class="col-sm-9"><span id="idColor"></span></dd>
-                        
+                            
                         <dt class="col-sm-3">Início:</dt>
                         <dd class="col-sm-9"><span id="idStart"></span></dd>
 
                         <dt class="col-sm-3">Término</dt>
                         <dd class="col-sm-9"><span id="idEnd"></span></dd>
+
+                        <dt class="col-sm-3">Motivação:</dt>
+                        <dd class="col-sm-9"><span id="idMotivacao"></span></dd>
+
+                        <dt class="col-sm-3">Participantes:</dt>
+                        <dd class="col-sm-9"><span id="idParticipantes"></span></dd>
+
+                        <dt class="col-sm-3">Função:</dt>
+                        <dd class="col-sm-9"><span id="idFuncao"></span></dd>
+
 
                     </dl>
                 </div>
@@ -277,10 +343,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                         <input type="hidden" name="id" id="editid">
 
-                        <!--editar titulo-->
+                        <!--editar ORD-->
                         <div class="mb-3">
-                            <label for="nome" class="col-form-label">titulo:</label>
-                            <input type="text" name="title" class="form-control" id="editTitle" placeholder="Digite o titulo">
+                            <label for="ord" class="col-form-label">ORD:</label>
+                            <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite o titulo">
                         </div>
 
                          <!--editar data inicio-->
@@ -290,14 +356,30 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             onblur="if (!this.value) this.type='text'" >
                         </div>
 
-                         <!--editar data fianl-->
+                         <!--editar data fianla-->
                          <div class="mb-3">
                             <label for="end" class="col-form-label">Fim:</label>
                             <input type="text" name="end" class="form-control" id="editEnd"  onfocus="this.type='datetime-local'" 
                             onblur="if (!this.value) this.type='text'" >
                         </div>
 
+                         <!--editar motivação-->
+                        <div class="mb-3">
+                            <label for="motivacao" class="col-form-label">Motivação:</label>
+                            <input type="text" name="motivacao" class="form-control" id="editMotivacao" placeholder="Digite o nome">
+                         </div>
 
+                        <!--editar Participantes-->
+                         <div class="mb-3">
+                            <label for="participantes" class="col-form-label">Participantes:</label>
+                            <input type="text" name="participantes" class="form-control" id="editParticipantes" placeholder="Digite o nome">
+                         </div>
+
+                        <!--editar Função-->
+                        <div class="mb-3">
+                            <label for="funcao" class="col-form-label">Função:</label>
+                            <input type="text" name="funcao" class="form-control" id="editFuncao" placeholder="Digite o nome">
+                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
@@ -334,7 +416,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             
             dadosDoForm.append("add", 1);
 
-            const dados = await fetch("cadastrar_evento.php", {
+            const dados = await fetch("cadastrar_missoes.php", {
                 method:"POST",
                 body: dadosDoForm,
         
@@ -342,7 +424,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         //java pra mostrar a tabela na tela
        const resposta =  await dados.json();
-       console.log(resposta);
+        // Recarregar a página após o envio do formulário
+        if (!resposta.erro) {
+             window.location.reload();
+         }
 
         });
 
@@ -360,7 +445,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         //javaSc para visualizar pessoa da tabela
         
         
-        async function visualizarUsuario(id){
+        async function visualizarMissoes(id){
             
             const dados = await fetch("visualizarMissions.php?id=" + id);
             const resposta = await dados.json();
@@ -372,12 +457,15 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 const viswModal = new bootstrap.Modal(document.getElementById("visualizarMissions"));
                 viswModal.show();
 
-                
                 document.getElementById("idId").innerHTML = resposta['dados'].id
-                document.getElementById("idTitle").innerHTML = resposta['dados'].title
+                document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
+                document.getElementById("idType").innerHTML = resposta['dados'].tipo;
                 document.getElementById("idColor").innerHTML = resposta['dados'].color
                 document.getElementById("idStart").innerHTML = resposta['dados'].start
                 document.getElementById("idEnd").innerHTML = resposta['dados'].end
+                document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
+                document.getElementById("idParticipantes").innerHTML = resposta['dados'].participantes;
+                document.getElementById("idFuncao").innerHTML = resposta['dados'].funcao;
             }
          }
  
@@ -387,7 +475,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         //java pra editar formulario
 
-        async function editUsuarioDados(id){
+        async function editMissoes(id){
             const dados = await fetch("visualizarMissions.php?id=" + id);
             const resposta = await dados.json();
             //console.log(resposta);
@@ -398,9 +486,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 const editModal =  new bootstrap.Modal(document.getElementById("editUsuarioModal"));
                 editModal.show();
                 document.getElementById("editid").value = resposta['dados'].id
-                document.getElementById("editTitle").value = resposta['dados'].title
+                document.getElementById("editOrd").value = resposta['dados'].ord;
                 document.getElementById("editStart").value = resposta['dados'].start
                 document.getElementById("editEnd").value = resposta['dados'].end
+                document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
+                document.getElementById("editParticipantes").value = resposta['dados'].participantes;
+                document.getElementById("editFuncao").value = resposta['dados'].funcao;
             }
         }
 
@@ -409,12 +500,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             e.preventDefault();
 
             const dadosDoForm = new FormData(editForm);
-
-            //console.log(dadosDoForm)
-
-           // for ( var dados  of dadosDoForm.entries()){
-            //    console.log(dados[0] + ", " + dados[1])
-           // }
 
            const dados = await fetch("editMissions.php", {
             method: "POST",
@@ -442,7 +527,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         //javaScript para apagar registros
         
-        async function apagarUsuarioDados(id){
+        async function apagarMissoes(id){
             
             //alerta perguntando se quer realmente deletar
             var confirmar = confirm("Tem certeza que deseja deletar a missão?")

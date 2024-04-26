@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Instanciar FullCalendar.Calendar e atribuir a variável calendar
     var calendar = new FullCalendar.Calendar(calendarEl, {
 
+        eventClassNames: function(arg) {
+            return arg.event.classNames; // Usa as classes CSS definidas para cada evento
+        },
+
         // Incluir o bootstrap 5
         themeSystem: 'bootstrap5',
 
@@ -50,13 +54,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Enviar para a janela modal os dados do evento
             document.getElementById("visualizar_id").innerText = info.event.id;
-            document.getElementById("visualizar_title").innerText = info.event.title;
             document.getElementById("visualizar_start").innerText = info.event.start.toLocaleString();
             document.getElementById("visualizar_end").innerText = info.event.end.toLocaleString();
             // Abrir a janela modal
             visualizarModal.show();
         }
     });
+
+    calendar.on('eventRender', function(info) {
+        // Aqui você pode acessar as propriedades do evento e personalizar sua aparência
+        info.el.style.backgroundColor = '#FF5733'; // Altera a cor de fundo
+        info.el.style.borderColor = '#FF5733'; // Altera a cor da borda
+        info.el.style.borderRadius = '10px'; // Arredonda as bordas
+    });
+    
 
     calendar.render();
 

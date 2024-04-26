@@ -14,7 +14,7 @@ if(!empty($pagina)){
     
 
 
-        $query_missions = "SELECT id,title,color,start,end FROM  events ORDER BY id ASC LIMIT $inicio, $qnt_missions_pg";
+        $query_missions = "SELECT id, tipo, ord,color,start,end, funcao, motivacao, participantes FROM  missoes ORDER BY id ASC LIMIT $inicio, $qnt_missions_pg";
         $resultado_missions = $conn->prepare($query_missions);
         $resultado_missions->execute();
 
@@ -23,12 +23,16 @@ if(!empty($pagina)){
         <table class='table table-striped table-bordered  table table-bordered border-white table-dark'>
             <thead>
                 <tr>
-                    <th scope='col'>id</th>
-                    <th scope='col'>title</th>
-                    <th scope='col'>color</th>
-                    <th scope='col'>start</th>
-                    <th scope='col'>end</th>
-                    <th scope='col'>Editar</th>
+                <th scope='col'>ID</th>
+                <th scope='col'>TIPO</th>
+                <th scope='col'>ORD</th>
+                <th scope='col'>Cor</th>
+                <th scope='col'>Início</th>
+                <th scope='col'>Término</th>
+                <th scope='col'>Motivação</th>
+                <th scope='col'>Participantes</th>
+                <th scope='col'>Função</th>
+                <th scope='col'>Editar</th>
                 </tr>
             </thead>
             <tbody>";
@@ -39,16 +43,22 @@ if(!empty($pagina)){
             extract($row_missions);
                 
             $dados_missions .= "<tr>
-
-            <td >$id</td>
-            <td>$title</td>
+            <td>$id</td>
+            <td>$tipo</td>
+            <td>$ord</td>
             <td>$color</td>
             <td>$start</td>
             <td>$end</td>
+            <td>$motivacao</td>
+            <td>$participantes</td>
+            <td>$funcao</td>
+
             <td>
-            <button id='$id' class='btn btn-success btn-sm' onclick ='visualizarUsuario($id)'>Visualizar</button>
-            <button id='$id' class='btn btn-warning btn-sm' onclick ='editUsuarioDados($id)'>Editar</button>
-            <button id='$id' class='btn btn-danger btn-sm' onclick ='apagarUsuarioDados($id)'>Deletar</button>
+            <div class='btn-group-vertical' role='group' aria-label='Ações'>
+                <button id='<?php echo $id; ?>' class='btn btn-success btn-sm' onclick='visualizarMissoes($id)'>Visualizar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editMissoes($id)'>Editar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarMissoes($id)'>Deletar</button>
+            </div>
             </td>
             
             
@@ -69,7 +79,7 @@ if(!empty($pagina)){
         ";
 
         //paginação - somar a aquantidade de usários
-       $query_paginas = "SELECT COUNT(id) AS num_result FROM events";
+       $query_paginas = "SELECT COUNT(id) AS num_result FROM missoes";
        $result_paginas = $conn->prepare($query_paginas);
        $result_paginas->execute();
        $row_paginas = $result_paginas->fetch(PDO::FETCH_ASSOC);

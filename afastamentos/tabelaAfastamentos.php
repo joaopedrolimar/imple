@@ -10,7 +10,7 @@ if (!empty($pagina)) {
     $qnt_afastamentos_pg = 10; // Quantidade de afastamentos visualizados por página
     $inicio = ($pagina * $qnt_afastamentos_pg) - $qnt_afastamentos_pg;
 
-    $query_afastamentos = "SELECT id, title, color, start, end,nome FROM afastamentos ORDER BY id ASC LIMIT $inicio, $qnt_afastamentos_pg";
+    $query_afastamentos = "SELECT id,color, start, end, nome, ord, motivacao, observacao, tipo FROM afastamentos ORDER BY id ASC LIMIT $inicio, $qnt_afastamentos_pg";
     $resultado_afastamentos = $conn->prepare($query_afastamentos);
     $resultado_afastamentos->execute();
 
@@ -19,11 +19,14 @@ if (!empty($pagina)) {
             <thead>
                 <tr>
                     <th scope='col'>ID</th>
-                    <th scope='col'>Título</th>
+                    <th scope='col'>TIPO</th>
+                    <th scope='col'>ORD</th>
                     <th scope='col'>Cor</th>
                     <th scope='col'>Início</th>
-                    <th scope='col'>Fim</th>
+                    <th scope='col'>Término</th>
+                    <th scope='col'>Motivação</th>
                     <th scope='col'>Nome</th>
+                    <th scope='col'>Observação</th>
                     <th scope='col'>Editar</th>
                 </tr>
             </thead>
@@ -35,17 +38,22 @@ if (!empty($pagina)) {
 
         $dados_afastamentos .= "<tr>
             <td>$id</td>
-            <td>$title</td>
+            <td>$tipo</td>
+            <td>$ord</td>
             <td>$color</td>
             <td>$start</td>
             <td>$end</td>
+            <td>$motivacao</td>
             <td>$nome</td>
+            <td>$observacao</td>
             
             <td>
-                <button id='$id' class='btn btn-success btn-sm' onclick ='visualizarReunioes($id)'>Visualizar</button>
-                <button id='$id' class='btn btn-warning btn-sm' onclick ='editReunioes($id)'>Editar</button>
-                <button id='$id' class='btn btn-danger btn-sm' onclick ='apagarReunioes($id)'>Deletar</button>
-            </td>
+            <div class='btn-group-vertical' role='group' aria-label='Ações'>
+                <button id='<?php echo $id; ?>' class='btn btn-success btn-sm' onclick='visualizarReunioes($id)'>Visualizar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editReunioes($id)'>Editar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarReunioes($id)'>Deletar</button>
+            </div>
+        </td>>
         </tr>";
     }
 

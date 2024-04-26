@@ -10,7 +10,7 @@ if (!empty($pagina)) {
     $qnt_reunioes_pg = 10; // Quantidade de tabelas visualizadas por página
     $inicio = ($pagina * $qnt_reunioes_pg) - $qnt_reunioes_pg;
 
-    $query_reunioes = "SELECT id,title,color,start,end FROM reunioes ORDER BY id ASC LIMIT $inicio, $qnt_reunioes_pg";
+    $query_reunioes = "SELECT  id, tipo,  color, start, end, motivacao, participantes FROM reunioes ORDER BY id ASC LIMIT $inicio, $qnt_reunioes_pg";
     $resultado_reunioes = $conn->prepare($query_reunioes);
     $resultado_reunioes->execute();
 
@@ -19,10 +19,12 @@ if (!empty($pagina)) {
             <thead>
                 <tr>
                     <th scope='col'>ID</th>
-                    <th scope='col'>Título</th>
+                    <th scope='col'>TIPO</th>
                     <th scope='col'>Cor</th>
                     <th scope='col'>Início</th>
                     <th scope='col'>Fim</th>
+                    <th scope='col'>Motivação</th>
+                    <th scope='col'>Participantes</th>
                     <th scope='col'>Editar</th>
                 </tr>
             </thead>
@@ -34,14 +36,19 @@ if (!empty($pagina)) {
 
         $dados_reunioes .= "<tr>
             <td>$id</td>
-            <td>$title</td>
+            <td>$tipo</td>
             <td>$color</td>
             <td>$start</td>
             <td>$end</td>
+            <td>$motivacao</td>
+            <td>$participantes</td>
+
             <td>
-                <button id='$id' class='btn btn-success btn-sm' onclick ='visualizarReunioes($id)'>Visualizar</button>
-                <button id='$id' class='btn btn-warning btn-sm' onclick ='editReunioes($id)'>Editar</button>
-                <button id='$id' class='btn btn-danger btn-sm' onclick ='apagarReunioes($id)'>Deletar</button>
+            <div class='btn-group-vertical' role='group' aria-label='Ações'>
+                <button id='<?php echo $id; ?>' class='btn btn-success btn-sm' onclick='visualizarReunioes($id)'>Visualizar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editReunioes($id)'>Editar</button>
+                <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarReunioes($id)'>Deletar</button>
+            </div>
             </td>
         </tr>";
     }

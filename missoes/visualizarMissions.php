@@ -5,7 +5,7 @@ $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
 if(!empty($id)){
 
-    $query_usuario = "SELECT  id,title,color,start,end FROM events WHERE id =:id LIMIT 1";
+    $query_usuario = "SELECT  id, ord, tipo,  color, start, end, funcao, motivacao, participantes FROM missoes WHERE id =:id LIMIT 1";
     $result_ususario = $conn->prepare($query_usuario);
     $result_ususario->bindParam(':id', $id);
     $result_ususario->execute();

@@ -22,41 +22,66 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <style>
+         /* Estilos gerais */
+         body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Estilo do formulário */
         .box {
-            margin: 50px 0px 50px 0px;
-            width: 460px;
-            height: auto;
-            margin: 80px auto;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
             border-radius: 10px;
-            padding-top: 30px;
-            padding-bottom: 20px;
-            background: rgba(0, 0, 0, 0.18);
-            padding-left: 30px;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
         }
 
         .box h2 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        .inputReunioes {
-            background-color: #fbfbfb;
-            width: 408px;
+        .box label {
+            font-weight: bold;
+        }
+        #color{
+            font-weight: bold;
+        }
+
+        .inputAfastamentos {
+            width: 100%;
             height: 40px;
-            border-radius: 10px;
-            border-style: solid;
-            border-width: 1px;
-            border-color: blue;
             margin-bottom: 20px;
+            padding: 5px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        .inputWrapp p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
         }
 
         .enviar {
+            width: 100%;
             height: 45px;
             text-transform: uppercase;
             border-radius: 10px;
-            width: 420px;
             cursor: pointer;
-            color: white;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
         }
+
+        .enviar:hover {
+            background-color: #0056b3;
+        }
+
 
         .titulo_reunioes {
             background-color: #333;
@@ -66,6 +91,29 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             letter-spacing: .1em;
             color: white;
             font-family: monospace;
+        }
+        .btn-group-vertical .btn {
+                margin-bottom: 20px; 
+
+            }
+                /* Estilos para dispositivos móveis */
+                @media (max-width: 768px) {
+            .box {
+                width: 90%;
+                padding: 20px;
+            }
+            .inputAfastamentos {
+                width: 100%;
+            }
+            .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            }
+            .btn-group-vertical .btn {
+                margin-bottom: 9px; /* Adiciona uma margem entre os botões */
+            }
+
+            
         }
     </style>
 
@@ -152,33 +200,45 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <!-- Formulario Reuniões -->
         <div class="box">
 
-            <h2>Criar Nova Reunião</h2>
+<h2>Criar Novo Afastamento</h2>
 
-            <form id="form" method="POST">
+<form id="form" method="POST">
 
-                <div class="inputWrapp">
-                    <label for="title">Title</label>
-                    <input type="text" name="title" id="title" class="inputReunioes" required>
-                </div>
+    <div class="inputWrapp">
+        <label for="tipo">Tipo de Evento</label>
+        <input type="text" name="tipo" id="tipo" class="inputAfastamentos" value="Reuniões" readonly>
+    </div>
 
-                <p>color:</p>
-                <select name="color" class="inputReunioes" id="color">
-                    <option value="#FFFF00">Laranja</option>
-                </select>
+    <p id="color">Color:</p>
+    <select name="color" class="inputAfastamentos" id="color">
+        <option value="#EEAD2D">Amarelo</option>
+    </select>
 
-                <div class="inputWrapp">
-                    <label for="start">Start</label>
-                    <input type="datetime-local" name="start" id="start" class="inputReunioes" required>
-                </div>
+    <div class="inputWrapp">
+        <label for="start">Início</label>
+        <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+    </div>
 
-                <div class="inputWrapp">
-                    <label for="end">End</label>
-                    <input type="datetime-local" name="end" id="end" class="inputReunioes" required>
-                </div>
+    <div class="inputWrapp">
+        <label for="end">Término</label>
+        <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+    </div>
 
-                <button type="submit" class="enviar btn btn-primary">enviar</button>
-            </form>
-        </div>
+    <div class="inputWrapp">
+        <label for="motivacao">Motivação</label>
+        <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
+    </div>
+
+    <div class="inputWrapp">
+        <label for="participantes">Participantes</label>
+        <input type="text" name="participantes" id="participantes" class="inputAfastamentos" >
+    </div>
+
+   
+         <button type="submit" class="enviar btn btn-primary inputWrapp">enviar</button>
+   
+</form>
+</div>
 
         <!-- TABELA de visualizar missões -->
         <div class="container ">
@@ -214,16 +274,20 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <div class="modal-body">
                         <span id="msgAlertaErroVis"></span>
                         <dl class="row">
+                            <dt class="col-sm-3">TIPO:</dt>
+                            <dd class="col-sm-9"><span id="idType"></span></dd>
                             <dt class="col-sm-3">ID:</dt>
                             <dd class="col-sm-9"><span id="idId"></span></dd>
-                            <dt class="col-sm-3">Reunião:</dt>
-                            <dd class="col-sm-9"><span id="idTitle"></span></dd>
                             <dt class="col-sm-3">Cor:</dt>
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
                             <dt class="col-sm-3">Início:</dt>
                             <dd class="col-sm-9"><span id="idStart"></span></dd>
                             <dt class="col-sm-3">Término</dt>
                             <dd class="col-sm-9"><span id="idEnd"></span></dd>
+                            <dt class="col-sm-3">Motivação:</dt>
+                            <dd class="col-sm-9"><span id="idMotivacao"></span></dd>
+                            <dt class="col-sm-3">Participantes:</dt>
+                            <dd class="col-sm-9"><span id="idParticipantes"></span></dd>
                         </dl>
                     </div>
                 </div>
@@ -248,11 +312,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <input type="hidden" name="id" id="editid">
 
                             <div class="mb-3">
-                                <label for="nome" class="col-form-label">Título:</label>
-                                <input type="text" name="title" class="form-control" id="editTitle" placeholder="Digite o título">
-                            </div>
-
-                            <div class="mb-3">
                                 <label for="start" class="col-form-label">Início:</label>
                                 <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
@@ -262,10 +321,25 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                                 <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
 
+                            
+                            <div class="mb-3">
+                                <label for="motivacao" class="col-form-label">Motivação:</label>
+                                <input type="text" name="motivacao" class="form-control" id="editMotivacao" placeholder="Digite o nome">
+                            </div>
+
+
+                            
+                            <div class="mb-3">
+                                <label for="participantes" class="col-form-label">Participantes:</label>
+                                <input type="text" name="participantes" class="form-control" id="editParticipantes" placeholder="Digite o nome">
+                            </div>
+
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
                                 <input type="submit" class="btn btn-outline-warning btn-sm" id="edit-reunioes-btn" value="Salvar" />
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -298,7 +372,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 });
 
                 const data = await response.json();
-                console.log(data);
+               // Recarregar a página após o envio do formulário
+               if (!data.erro) {
+                    window.location.reload();
+                 }
             });
 
             const tbody = document.querySelector(".listar_missions");
@@ -323,11 +400,14 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
                     viswModal.show();
 
+                    document.getElementById("idType").innerHTML = resposta['dados'].tipo;
                     document.getElementById("idId").innerHTML = resposta['dados'].id;
-                    document.getElementById("idTitle").innerHTML = resposta['dados'].title;
                     document.getElementById("idColor").innerHTML = resposta['dados'].color;
                     document.getElementById("idStart").innerHTML = resposta['dados'].start;
                     document.getElementById("idEnd").innerHTML = resposta['dados'].end;
+                    document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
+                    document.getElementById("idParticipantes").innerHTML = resposta['dados'].participantes;
+
                 }
             }
 
@@ -343,9 +423,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     editModal.show();
 
                     document.getElementById("editid").value = resposta['dados'].id;
-                    document.getElementById("editTitle").value = resposta['dados'].title;
                     document.getElementById("editStart").value = resposta['dados'].start;
                     document.getElementById("editEnd").value = resposta['dados'].end;
+                    document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
+                    document.getElementById("editParticipantes").value = resposta['dados'].participantes;
                 }
             }
 

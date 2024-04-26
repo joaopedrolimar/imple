@@ -5,7 +5,7 @@ $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
 if (!empty($id)) {
 
-    $query_usuario = "DELETE FROM events WHERE id=:id";
+    $query_usuario = "DELETE FROM missoes WHERE id=:id";
     $result_usuario = $conn->prepare($query_usuario);
     $result_usuario->bindParam(':id', $id);
 

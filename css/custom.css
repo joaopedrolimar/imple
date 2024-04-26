@@ -1,4 +1,6 @@
 #calendar-container {
     max-width: 800px; /* Defina a largura máxima desejada para o calendário */
     margin: 0 auto; /* Centraliza o contêiner horizontalmente na página */
+    border-radius: 50px;
 }
+

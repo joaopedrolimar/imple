@@ -38,6 +38,43 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <link rel="stylesheet" href="./css/custom.css">
 
     <title>Intranet</title>
+
+    <style>
+        /* Altera a cor de fundo do Calendário FullCalendar para preto */
+            .fc {
+                background-color: #22c1c3;
+                border: solid 20px 0px 20px 0px red;
+             }
+
+                         /* Altera a cor de fundo dos cabeçalhos do calendário */
+            .fc-toolbar {
+                background-color: #fff; /* escolha a cor que desejar */
+                padding: 30px;
+                text-transform: uppercase;
+            }
+
+            /* Altera a cor dos botões no cabeçalho do calendário */
+            .fc-toolbar button {
+                color: white; /* cor do texto */
+                background-color: #555; /* cor de fundo */
+                border-color: #555; /* cor da borda */
+            }
+
+            /* Altera a cor dos links */
+            a {
+                color: white;
+            }
+
+            /* Altera a cor do botão de hoje */
+            .fc-today-button {
+                color: white;
+                background-color: #555;
+                border-color: #555;
+            }
+
+          
+
+    </style>
 </head>
 
 <body>
@@ -151,18 +188,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                         <dt class="col-sm-3">ID: </dt>
                         <dd class="col-sm-9" id="visualizar_id"></dd>
-
-                        <dt class="col-sm-3">Título: </dt>
-                        <dd class="col-sm-9" id="visualizar_title"></dd>
-
+                        
                         <dt class="col-sm-3">Início: </dt>
                         <dd class="col-sm-9" id="visualizar_start"></dd>
 
                         <dt class="col-sm-3">Fim: </dt>
                         <dd class="col-sm-9" id="visualizar_end"></dd>
-
-                        <dt class="col-sm-3">Nome: </dt>
-                        <dd class="col-sm-9" id="visualizar_nome"></dd>
 
                         
 
@@ -179,7 +210,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src='./js/index.global.min.js'></script>
-    
+   
     <script src="./js/bootstrap5/index.global.min.js"></script>
     <script src='./js/core/locales-all.global.min.js'></script>
     <script src='./js/custom.js'></script>

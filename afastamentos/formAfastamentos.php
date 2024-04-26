@@ -22,40 +22,64 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
     <style>
+         /* Estilos gerais */
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Estilo do formulário */
         .box {
-            margin: 50px 0px 50px 0px;
-            width: 460px;
-            height: auto;
-            margin: 80px auto;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
             border-radius: 10px;
-            padding-top: 30px;
-            padding-bottom: 20px;
-            background: rgba(0, 0, 0, 0.18);
-            padding-left: 30px;
+            background-color: #fff;
+            box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.1);
         }
 
         .box h2 {
             text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .box label {
+            font-weight: bold;
+        }
+        #color{
+            font-weight: bold;
         }
 
         .inputAfastamentos {
-            background-color: #fbfbfb;
-            width: 408px;
+            width: 100%;
             height: 40px;
-            border-radius: 10px;
-            border-style: solid;
-            border-width: 1px;
-            border-color: blue;
             margin-bottom: 20px;
+            padding: 5px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+
+        .inputWrapp p {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
         }
 
         .enviar {
+            width: 100%;
             height: 45px;
             text-transform: uppercase;
             border-radius: 10px;
-            width: 420px;
             cursor: pointer;
-            color: white;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+
+        .enviar:hover {
+            background-color: #0056b3;
         }
 
         .titulo_afastamentos {
@@ -67,6 +91,31 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             color: white;
             font-family: monospace;
         }
+        .btn-group-vertical .btn {
+                margin-bottom: 20px; 
+
+            }
+                /* Estilos para dispositivos móveis */
+                @media (max-width: 768px) {
+            .box {
+                width: 90%;
+                padding: 20px;
+            }
+            .inputAfastamentos {
+                width: 100%;
+            }
+            .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            }
+            .btn-group-vertical .btn {
+                margin-bottom: 9px; /* Adiciona uma margem entre os botões */
+            }
+
+            
+        }
+
+
     </style>
 
 </head>
@@ -153,8 +202,34 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <form id="form" method="POST">
 
                 <div class="inputWrapp">
-                    <label for="title">Title</label>
-                    <input type="text" name="title" id="title" class="inputAfastamentos" required>
+                    <label for="tipo">Tipo de Evento</label>
+                    <input type="text" name="tipo" id="tipo" class="inputAfastamentos" value="Afastamento" readonly>
+                </div>
+
+
+                <div class="inputWrapp">
+                    <label for="ord">ORD:</label>
+                    <input type="text" name="ord" id="ord" class="inputAfastamentos" required>
+                </div>
+
+                <p id="color">Color:</p>
+                <select name="color" class="inputAfastamentos" id="color">
+                    <option value="#0d7909">Verde</option>
+                </select>
+
+                <div class="inputWrapp">
+                    <label for="start">Início</label>
+                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="end">Término</label>
+                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+                </div>
+
+                <div class="inputWrapp">
+                    <label for="motivacao">Motivação</label>
+                    <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
@@ -162,23 +237,14 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <input type="text" name="nome" id="nome" class="inputAfastamentos" required>
                 </div>
 
-
-                <p>color:</p>
-                <select name="color" class="inputAfastamentos" id="color">
-                    <option value="#0d7909">Verde</option>
-                </select>
-
                 <div class="inputWrapp">
-                    <label for="start">Start</label>
-                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+                    <label for="observacao">Observação</label>
+                    <input type="text" name="observacao" id="observacao" class="inputAfastamentos" >
                 </div>
 
-                <div class="inputWrapp">
-                    <label for="end">End</label>
-                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
-                </div>
-
-                <button type="submit" class="enviar btn btn-primary">enviar</button>
+               
+                     <button type="submit" class="enviar btn btn-primary inputWrapp">enviar</button>
+               
             </form>
         </div>
 
@@ -215,18 +281,25 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <div class="modal-body">
                         <span id="msgAlertaErroVis"></span>
                         <dl class="row">
+                            <dt class="col-sm-3">TIPO:</dt>
+                            <dd class="col-sm-9"><span id="idType"></span></dd>
                             <dt class="col-sm-3">ID:</dt>
                             <dd class="col-sm-9"><span id="idId"></span></dd>
-                            <dt class="col-sm-3">Afastamento:</dt>
-                            <dd class="col-sm-9"><span id="idTitle"></span></dd>
+                            <dt class="col-sm-3">ORD:</dt>
+                            <dd class="col-sm-9"><span id="idOrd"></span></dd>
                             <dt class="col-sm-3">Cor:</dt>
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
                             <dt class="col-sm-3">Início:</dt>
                             <dd class="col-sm-9"><span id="idStart"></span></dd>
                             <dt class="col-sm-3">Término:</dt>
                             <dd class="col-sm-9"><span id="idEnd"></span></dd>
+                            <dt class="col-sm-3">Afastamento:</dt>
+                            <dd class="col-sm-9"><span id="idMotivacao"></span></dd>
                             <dt class="col-sm-3">Nome:</dt>
                             <dd class="col-sm-9"><span id="idNome"></span></dd>
+                            <dt class="col-sm-3">Observação:</dt>
+                            <dd class="col-sm-9"><span id="idObservacao"></span></dd>
+
                         </dl>
                     </div>
                 </div>
@@ -250,8 +323,24 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <input type="hidden" name="id" id="editid">
 
                             <div class="mb-3">
-                                <label for="title" class="col-form-label">Título:</label>
-                                <input type="text" name="title" class="form-control" id="editTitle" placeholder="Digite o título">
+                                <label for="ord" class="col-form-label">ORD:</label>
+                                <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite a ORD">
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="start" class="col-form-label">Início:</label>
+                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="end" class="col-form-label">Término:</label>
+                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="motivacao" class="col-form-label">Motivação:</label>
+                                <input type="text" name="motivacao" class="form-control" id="editMotivacao" placeholder="Digite o nome">
                             </div>
 
                             <div class="mb-3">
@@ -260,14 +349,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             </div>
 
                             <div class="mb-3">
-                                <label for="start" class="col-form-label">Início:</label>
-                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                                <label for="observacao" class="col-form-label">Observação:</label>
+                                <input type="text" name="observacao" class="form-control" id="editObservacao" placeholder="Digite o nome">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="end" class="col-form-label">Fim:</label>
-                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
-                            </div>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
@@ -305,7 +390,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 });
 
                 const data = await response.json();
-                console.log(data);
+               // Recarregar a página após o envio do formulário
+                if (!data.erro) {
+                    window.location.reload();
+                 }
             });
 
             const tbody = document.querySelector(".listar_missions");
@@ -330,12 +418,18 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
                     viswModal.show();
 
+                    document.getElementById("idType").innerHTML = resposta['dados'].tipo;
                     document.getElementById("idId").innerHTML = resposta['dados'].id;
-                    document.getElementById("idTitle").innerHTML = resposta['dados'].title;
+                    document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
                     document.getElementById("idColor").innerHTML = resposta['dados'].color;
                     document.getElementById("idStart").innerHTML = resposta['dados'].start;
                     document.getElementById("idEnd").innerHTML = resposta['dados'].end;
+                    document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
                     document.getElementById("idNome").innerHTML = resposta['dados'].nome;
+                    document.getElementById("idObservacao").innerHTML = resposta['dados'].observacao;
+            
+
+
                 }
             }
 
@@ -351,10 +445,14 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     editModal.show();
 
                     document.getElementById("editid").value = resposta['dados'].id;
-                    document.getElementById("editTitle").value = resposta['dados'].title;
+                    document.getElementById("editOrd").value = resposta['dados'].ord;
                     document.getElementById("editStart").value = resposta['dados'].start;
                     document.getElementById("editEnd").value = resposta['dados'].end;
+                    document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
                     document.getElementById("editNome").value = resposta['dados'].nome;
+                    document.getElementById("editObservacao").value = resposta['dados'].observacao;
+                    
+
                 }
             }
 
