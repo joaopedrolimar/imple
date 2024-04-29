@@ -20,6 +20,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <title>Reuniões</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon">
 
     <style>
          /* Estilos gerais */
@@ -92,10 +93,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             color: white;
             font-family: monospace;
         }
-        .btn-group-vertical .btn {
-                margin-bottom: 20px; 
-
+        .btn-group .btn {
+                
+                margin: 9px;
+                display: flex; /* Exibe os botões em linha */
             }
+
                 /* Estilos para dispositivos móveis */
                 @media (max-width: 768px) {
             .box {
@@ -105,11 +108,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             .inputAfastamentos {
                 width: 100%;
             }
-            .btn-group-vertical {
+            .btn-group {
             display: flex;
             flex-direction: column;
             }
-            .btn-group-vertical .btn {
+            .btn-group .btn {
                 margin-bottom: 9px; /* Adiciona uma margem entre os botões */
             }
 
@@ -200,7 +203,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <!-- Formulario Reuniões -->
         <div class="box">
 
-<h2>Criar Novo Afastamento</h2>
+<h2>Criar Nova Reunião</h2>
 
 <form id="form" method="POST">
 

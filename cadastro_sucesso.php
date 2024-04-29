@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro Realizado</title>
-    <link rel="stylesheet" href="./css/cadastro_sucesso.css">
+    <link rel="stylesheet" href="./css/cadastro_sucesso2.css">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
@@ -16,7 +17,7 @@
     <i style="--clr:#39A7BF;"></i>
 
     <div class="login">
-        <h2>Cadastro feito com sucesso, aguarde a aprovação!</h2>
+        <h2>Cadastro feito com <br>sucesso, <br> aguarde a aprovação!</h2>
  
 
         <div class="inputBx">

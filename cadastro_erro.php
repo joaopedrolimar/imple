@@ -4,19 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro no Cadastro</title>
-    <link rel="stylesheet" href="./css/cadastro_sucesso.css">
+    <link rel="stylesheet" href="./css/cadastro_sucesso2.css">
+    <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
 </head>
 <body>
     
 
-    
-    <div class="container ring ">
-    
-    <i style="--clr:#1F438C;"></i>
-    <i style="--clr:#1B8C42;"></i>
-    <i style="--clr:#39A7BF;"></i>
+<div class="conteudo-login">
 
-    <div class="login">
+<div id="topo-login">
+    <div class="logo-login">
+        <a href="./login.php"><img src="https://intranet.sipam.gov.br/templates/shaper_helix3/images/logo-cnmp.png" alt="intranet inteligencia"></a>
+    </div>
+
+    <div class="texto-login">
+        <span>INTRANET</span>
+    </div>
+
+</div>
 
         <h2>Erro: Usuário ou email já existem.</h2>
  
@@ -25,9 +30,7 @@
             <a href="./login.php">Voltar</a>
         </div>
 
-    </div>
-
-    
+  
 
 
 </div>

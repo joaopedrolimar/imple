@@ -35,9 +35,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
     <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
 
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+
+
     <link rel="stylesheet" href="./css/custom.css">
 
-    <title>Intranet</title>
+    <title>Intranet Calendario</title>
 
     <style>
         /* Altera a cor de fundo do Calendário FullCalendar para preto */
@@ -71,6 +74,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 background-color: #555;
                 border-color: #555;
             }
+            .chart-container {
+            max-width: 800px; /* Largura máxima para o gráfico */
+            margin: 0 auto; /* Centraliza o gráfico na página */
+            margin-top: 20px; /* Espaçamento superior para separar do calendário */
+        }
 
           
 
@@ -146,6 +154,16 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     </div>
 
 
+
+    <div class="chart-container">
+        <canvas id="missionsChart"></canvas>
+    </div>
+
+
+    <div class="chart-container">
+    <canvas id="missionsColumnChart"></canvas>
+</div>
+
    
 
 
@@ -210,7 +228,93 @@ $is_owner = ($_SESSION["permissao"] === "owner");
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src='./js/index.global.min.js'></script>
-   
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript para renderizar o gráfico de missões
+        // Este código deve ser colocado abaixo da inclusão do arquivo Chart.js e dos dados do gráfico
+
+        // Função para renderizar o gráfico de missões
+        function renderMissionsChart(data) {
+            // Obtém o contexto do canvas do gráfico
+            const ctx = document.getElementById('missionsChart').getContext('2d');
+
+            // Cria o gráfico de linha
+            const missionsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    // Labels para o eixo X (meses)
+                    labels: Object.keys(data),
+                    datasets: [{
+                        label: 'Missões por mês',
+                        // Dados para o eixo Y (número de missões)
+                        data: Object.values(data),
+                        // Personalizações adicionais do gráfico
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    // Personalizações adicionais do gráfico, se necessário
+                }
+            });
+        }
+
+        // Solicitação AJAX para obter os dados das missões
+// Solicitação AJAX para obter os dados das missões
+// Solicitação AJAX para obter os dados das missões
+fetch('get_missions_data.php')
+ // Verifique se este caminho está correto
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico
+        renderMissionsChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das missões:', error);
+    });
+
+    // Função para renderizar o gráfico de missões (colunas)
+function renderMissionsColumnChart(data) {
+    // Obtém o contexto do canvas do gráfico
+    const ctx = document.getElementById('missionsColumnChart').getContext('2d');
+
+    // Cria o gráfico de colunas
+    const missionsColumnChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            // Labels para o eixo X (meses)
+            labels: Object.keys(data),
+            datasets: [{
+                label: 'Missões por mês',
+                // Dados para o eixo Y (número de missões)
+                data: Object.values(data),
+                // Personalizações adicionais do gráfico
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            // Personalizações adicionais do gráfico, se necessário
+        }
+    });
+}
+
+// Solicitação AJAX para obter os dados das missões
+fetch('get_missions_data.php')
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico de colunas
+        renderMissionsColumnChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das missões:', error);
+    });
+
+
+
+    </script>
     <script src="./js/bootstrap5/index.global.min.js"></script>
     <script src='./js/core/locales-all.global.min.js'></script>
     <script src='./js/custom.js'></script>

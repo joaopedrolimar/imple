@@ -48,7 +48,7 @@ if (!empty($pagina)) {
             <td>$observacao</td>
             
             <td>
-            <div class='btn-group-vertical' role='group' aria-label='Ações'>
+            <div class='btn-group' role='group' aria-label='Ações'>
                 <button id='<?php echo $id; ?>' class='btn btn-success btn-sm' onclick='visualizarReunioes($id)'>Visualizar</button>
                 <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editReunioes($id)'>Editar</button>
                 <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarReunioes($id)'>Deletar</button>
