@@ -161,8 +161,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
 
     <div class="chart-container">
-    <canvas id="missionsColumnChart"></canvas>
-</div>
+        <canvas id="missionsColumnChart"></canvas>
+    </div>
 
    
 
@@ -176,18 +176,17 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         </div>
     </div>
 
+
     <!-- Botões com os nomes dos usuários centralizados e com espaçamento -->
     <div class="container mt-4">
         <div class="row justify-content-center">
             <?php foreach ($usuarios as $usuario) : ?>
                 <div class="col-auto mb-2">
-                    <a href="#" class="btn btn-primary"><?= $usuario['username'] ?></a>
+                    <a href="#" class="btn btn-primary user-button"><?= $usuario['username'] ?></a>
                 </div>
             <?php endforeach; ?>
         </div>
-    </div>
-
-
+    </div> 
 
 
 
@@ -229,66 +228,62 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src='./js/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/bootstrap5/index.global.min.js"></script>
+    <script src='./js/core/locales-all.global.min.js'></script>
+    <script src='./js/custom.js'></script>
+
     <script>
-        // JavaScript para renderizar o gráfico de missões
-        // Este código deve ser colocado abaixo da inclusão do arquivo Chart.js e dos dados do gráfico
+    // Função para lidar com o clique nos botões de usuário
+    document.addEventListener('DOMContentLoaded', function() {
+        // Selecione todos os botões de usuário
+        const userButtons = document.querySelectorAll('.user-button');
 
-        // Função para renderizar o gráfico de missões
-        function renderMissionsChart(data) {
-            // Obtém o contexto do canvas do gráfico
-            const ctx = document.getElementById('missionsChart').getContext('2d');
+        // Adicione um evento de clique a cada botão
+        userButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                // Evite que o link seja seguido
+                event.preventDefault();
 
-            // Cria o gráfico de linha
-            const missionsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    // Labels para o eixo X (meses)
-                    labels: Object.keys(data),
-                    datasets: [{
-                        label: 'Missões por mês',
-                        // Dados para o eixo Y (número de missões)
-                        data: Object.values(data),
-                        // Personalizações adicionais do gráfico
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    // Personalizações adicionais do gráfico, se necessário
-                }
+                // Obtenha o nome do usuário clicado
+                const userName = this.textContent.trim();
+
+                // Faça uma solicitação AJAX para recuperar os dados das missões do usuário
+                fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
+
+                    .then(response => response.json())
+                    .then(data => {
+                        // Dados recebidos com sucesso
+                        console.log(data); // Aqui você pode manipular os dados como desejar, por exemplo, renderizar um gráfico
+                    })
+                    .catch(error => {
+                        console.error('Erro ao obter dados das missões:', error);
+                    });
             });
-        }
-
-        // Solicitação AJAX para obter os dados das missões
-// Solicitação AJAX para obter os dados das missões
-// Solicitação AJAX para obter os dados das missões
-fetch('get_missions_data.php')
- // Verifique se este caminho está correto
-    .then(response => response.json())
-    .then(data => {
-        // Dados recebidos com sucesso, agora renderize o gráfico
-        renderMissionsChart(data);
-    })
-    .catch(error => {
-        console.error('Erro ao obter dados das missões:', error);
+        });
     });
+// Declarar a variável missionsChart fora da função renderMissionsChart
+let missionsChart;
 
-    // Função para renderizar o gráfico de missões (colunas)
-function renderMissionsColumnChart(data) {
+// Função para renderizar o gráfico de missões
+function renderMissionsChart(data) {
+    // Verifica se o gráfico já existe, se sim, destrua-o
+    if (missionsChart) {
+        missionsChart.destroy();
+    }
+
     // Obtém o contexto do canvas do gráfico
-    const ctx = document.getElementById('missionsColumnChart').getContext('2d');
+    const ctx = document.getElementById('missionsChart').getContext('2d');
 
-    // Cria o gráfico de colunas
-    const missionsColumnChart = new Chart(ctx, {
+    // Cria o gráfico de barras
+    missionsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            // Labels para o eixo X (meses)
-            labels: Object.keys(data),
+            // Labels para o eixo X (nomes das missões)
+            labels: data.map(missao => missao.motivacao),
             datasets: [{
-                label: 'Missões por mês',
-                // Dados para o eixo Y (número de missões)
-                data: Object.values(data),
+                label: 'Missões do Usuário',
+                // Dados para o eixo Y (quantidade de missões)
+                data: data.map(missao => missao.id),
                 // Personalizações adicionais do gráfico
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
@@ -296,28 +291,90 @@ function renderMissionsColumnChart(data) {
             }]
         },
         options: {
-            // Personalizações adicionais do gráfico, se necessário
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
         }
     });
 }
 
-// Solicitação AJAX para obter os dados das missões
-fetch('get_missions_data.php')
-    .then(response => response.json())
-    .then(data => {
-        // Dados recebidos com sucesso, agora renderize o gráfico de colunas
-        renderMissionsColumnChart(data);
-    })
-    .catch(error => {
-        console.error('Erro ao obter dados das missões:', error);
+// Quando um usuário clicar em um botão com o nome do usuário
+document.querySelectorAll('.user-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const userName = this.textContent; // Obtém o nome do usuário do texto do botão
+
+        // Faça uma solicitação AJAX para obter os dados das missões desse usuário
+        fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
+
+            .then(response => response.json())
+            .then(data => {
+                // Dados recebidos com sucesso, agora renderize o gráfico com os novos dados
+                renderMissionsChart(data);
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados das missões:', error);
+            });
     });
+});
 
+// Função para atualizar o gráfico com os novos dados do usuário selecionado
+function updateChart(data) {
+    // Verifica se o gráfico já existe, se sim, destrua-o
+    if (missionsChart) {
+        missionsChart.destroy();
+    }
 
+    // Obtém o contexto do canvas do gráfico
+    const ctx = document.getElementById('missionsChart').getContext('2d');
 
-    </script>
-    <script src="./js/bootstrap5/index.global.min.js"></script>
-    <script src='./js/core/locales-all.global.min.js'></script>
-    <script src='./js/custom.js'></script>
+    // Cria o novo gráfico de barras com os dados atualizados
+    missionsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            // Labels para o eixo X (nomes das missões)
+            labels: data.map(missao => missao.motivacao),
+            datasets: [{
+                label: 'Missões do Usuário',
+                // Dados para o eixo Y (quantidade de missões)
+                data: data.map(missao => missao.id),
+                // Personalizações adicionais do gráfico
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Quando um usuário clicar em um botão com o nome do usuário
+document.querySelectorAll('.user-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const userName = this.textContent; // Obtém o nome do usuário do texto do botão
+
+        // Faça uma solicitação AJAX para obter os dados das missões desse usuário
+        fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
+            .then(response => response.json())
+            .then(data => {
+                // Dados recebidos com sucesso, agora atualize o gráfico com os novos dados
+                updateChart(data);
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados das missões:', error);
+            });
+    });
+});
+
+</script>
+
 
 </body>
 

@@ -12,6 +12,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon">
 
+    <script>
+        // Função para atualizar dinamicamente a data na página de login
+        function atualizarData() {
+            // Obter o elemento onde a data será exibida
+            var dataElement = document.getElementById("data-atual");
+
+            // Obter a data atual
+            var dataAtual = new Date();
+
+            // Formatar a data no formato desejado (exemplo: "Brasília - Segunda, 29 de Abril de 2024")
+            var diaSemana = dataAtual.toLocaleDateString('pt-BR', {
+                weekday: 'long'
+            });
+            var dia = dataAtual.getDate();
+            var mes = dataAtual.toLocaleDateString('pt-BR', {
+                month: 'long'
+            });
+            var ano = dataAtual.getFullYear();
+
+            // Atualizar o conteúdo do elemento HTML com a data atual formatada
+            dataElement.textContent = "Brasília - " + diaSemana + ", " + dia + " de " + mes + " de " + ano;
+        }
+
+        // Chamar a função para atualizar a data quando a página carregar
+        window.onload = function() {
+            atualizarData();
+        };
+    </script>
 </head>
 
 <body>
@@ -24,14 +52,15 @@
             </div>
 
             <div class="texto-login">
-                <span>INTRANET</span>
+                <span>INTRANET </span>
             </div>
 
         </div>
 
 
         <div class="data-login">
-            <p>Brasília - Segunda, 29 de Abril de 2024</p>
+            <!-- Elemento HTML para exibir a data atual -->
+            <p id="data-atual">Brasília - Segunda, 29 de Abril de 2024</p>
         </div>
 
         <section id="sp-componentes">
