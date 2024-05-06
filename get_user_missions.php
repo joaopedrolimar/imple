@@ -21,3 +21,4 @@ if (isset($_GET['userName'])) {
     echo json_encode(array('error' => 'Nome de usuário não especificado.'));
 }
 ?>
+

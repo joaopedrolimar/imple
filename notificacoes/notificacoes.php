@@ -105,6 +105,9 @@ $usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
             <a class="nav-link" href="/imple/afastamentos/formAfastamentos.php">Afastamentos</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
+          </li>
 
           
           <?php if ($is_owner) : ?>

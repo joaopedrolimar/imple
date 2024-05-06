@@ -17,14 +17,15 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reuniões</title>
+    <title>Atividades</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
     <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon">
 
     <style>
          /* Estilos gerais */
-         body {
+        body {
             background-color: #f8f9fa;
             color: #333;
         }
@@ -52,7 +53,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             font-weight: bold;
         }
 
-        .inputAfastamentos {
+        .inputAtividades{
             width: 100%;
             height: 40px;
             margin-bottom: 20px;
@@ -83,8 +84,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             background-color: #0056b3;
         }
 
-
-        .titulo_reunioes {
+        .titulo_atividades {
             background-color: #333;
             padding: 12px;
             border-top-right-radius: 20px;
@@ -105,7 +105,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 width: 90%;
                 padding: 20px;
             }
-            .inputAfastamentos {
+            .inputAtividades {
                 width: 100%;
             }
             .btn-group {
@@ -118,6 +118,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
             
         }
+
+
     </style>
 
 </head>
@@ -188,15 +190,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
   </div>
 </nav>
 
-
-
-
-
-    <div class="container">
+<div class="container">
         <div class="row mt-4">
             <div class="col-lg-12 d-flex justify-content-between align-items-center">
                 <div>
-                    <h4>Reuniões</h4>
+                    <h4>Afastamentos</h4>
                 </div>
             </div>
         </div>
@@ -204,55 +202,65 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         <span id="msgAlerta"></span>
 
-        <!-- Formulario Reuniões -->
+        <!-- Formulário de Afastamentos -->
         <div class="box">
 
-<h2>Criar Nova Reunião</h2>
+            <h2>Criar Nova Atividade</h2>
 
-<form id="form" method="POST">
+            <form id="form" method="POST">
 
-    <div class="inputWrapp">
-        <label for="tipo">Tipo de Evento</label>
-        <input type="text" name="tipo" id="tipo" class="inputAfastamentos" value="Reuniões" readonly>
-    </div>
+                <div class="inputWrapp">
+                    <label for="tipo">Tipo de Evento</label>
+                    <input type="text" name="tipo" id="tipo" class="inputAtividades" value="Atividades" readonly>
+                </div>
 
-    <p id="color">Color:</p>
-    <select name="color" class="inputAfastamentos" id="color">
-        <option value="#EEAD2D">Amarelo</option>
-    </select>
+                <div class="inputWrapp">
+                    <label for="produto">Produto:</label>
+                    <input type="text" name="produto" id="produto" class="inputAtividades" required>
+                </div>
 
-    <div class="inputWrapp">
-        <label for="start">Início</label>
-        <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
-    </div>
+                <div class="inputWrapp">
+                    <label for="quantidade">Quantidade:</label>
+                    <input type="text" name="quantidade" id="quantidade" class="inputAtividades" required>
+                </div>
 
-    <div class="inputWrapp">
-        <label for="end">Término</label>
-        <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
-    </div>
+                <div class="inputWrapp">
+                    <label for="data">Início</label>
+                    <input type="datetime-local" name="data" id="data" class="inputAtividades" required>
+                </div>
 
-    <div class="inputWrapp">
-        <label for="motivacao">Motivação</label>
-        <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
-    </div>
+                <div class="inputWrapp">
+                    <label for="hora">H/H:</label>
+                    <input type="text" name="hora" id="hora" class="inputAtividades" required>
+                </div>
 
-    <div class="inputWrapp">
-        <label for="participantes">Participantes</label>
-        <input type="text" name="participantes" id="participantes" class="inputAfastamentos" >
-    </div>
+                <div class="inputWrapp">
+                    <label for="solicitante_cliente">Solicitane/Cliente:</label>
+                    <input type="text" name="solicitante_cliente" id="solicitante_cliente" class="inputAtividades" required>
+                </div>
 
-   
-         <button type="submit" class="enviar btn btn-primary inputWrapp">enviar</button>
-   
-</form>
-</div>
+                <div class="inputWrapp">
+                    <label for="documento">documento:</label>
+                    <input type="text" name="documento" id="documento" class="inputAtividades" >
+                </div>
 
-        <!-- TABELA de visualizar missões -->
+                <div class="inputWrapp">
+                    <label for="elaborado_por">Elaborado por:</label>
+                    <input type="text" name="elaborado_por" id="elaborado_por" class="inputAtividades" required>
+                </div>
+
+               
+                     <button type="submit" class="enviar btn btn-primary inputWrapp">enviar</button>
+               
+            </form>
+        </div>
+
+        <!-- Tabela de Afastamentos -->
         <div class="container ">
             <div class="row mt-4">
                 <div class="col-lg-12">
                     <div>
-                        <h1 class="titulo_reunioes">Tabela Reuniões</h1>
+                        <h1 class="titulo_atividades">Tabela Atividades</h1>
                     </div>
                 </div>
             </div>
@@ -261,7 +269,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 <div class="col-lg-12">
 
-                    <span class="listar_missions"></span>
+                    <span class="listar_atividades"></span>
 
                 </div>
 
@@ -269,13 +277,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         </div>
 
-        <!-- modal pra visualizar reuniões -->
-
+        <!-- Modal para visualizar afastamento -->
         <div class="modal fade" id="visualizarReunioes" tabindex="-1" aria-labelledby="visualizarReunioes" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="visualizarReunioes">Detalhes Reuniões</h5>
+                        <h5 class="modal-title" id="visualizarReunioes">Detalhes Afastamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -285,29 +292,33 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <dd class="col-sm-9"><span id="idType"></span></dd>
                             <dt class="col-sm-3">ID:</dt>
                             <dd class="col-sm-9"><span id="idId"></span></dd>
+                            <dt class="col-sm-3">ORD:</dt>
+                            <dd class="col-sm-9"><span id="idOrd"></span></dd>
                             <dt class="col-sm-3">Cor:</dt>
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
                             <dt class="col-sm-3">Início:</dt>
                             <dd class="col-sm-9"><span id="idStart"></span></dd>
-                            <dt class="col-sm-3">Término</dt>
+                            <dt class="col-sm-3">Término:</dt>
                             <dd class="col-sm-9"><span id="idEnd"></span></dd>
-                            <dt class="col-sm-3">Motivação:</dt>
+                            <dt class="col-sm-3">Afastamento:</dt>
                             <dd class="col-sm-9"><span id="idMotivacao"></span></dd>
-                            <dt class="col-sm-3">Participantes:</dt>
-                            <dd class="col-sm-9"><span id="idParticipantes"></span></dd>
+                            <dt class="col-sm-3">Nome:</dt>
+                            <dd class="col-sm-9"><span id="idNome"></span></dd>
+                            <dt class="col-sm-3">Observação:</dt>
+                            <dd class="col-sm-9"><span id="idObservacao"></span></dd>
+
                         </dl>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- modal pra editar reunião -->
-
+        <!-- Modal para editar afastamento -->
         <div class="modal fade" id="editReunioesModal" tabindex="-1" aria-labelledby="editReunioesModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editReunioesModalLabel">Editar Reunião</h5>
+                        <h5 class="modal-title" id="editReunioesModalLabel">Editar Afastamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -319,26 +330,34 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <input type="hidden" name="id" id="editid">
 
                             <div class="mb-3">
+                                <label for="ord" class="col-form-label">ORD:</label>
+                                <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite a ORD">
+                            </div>
+
+
+                            <div class="mb-3">
                                 <label for="start" class="col-form-label">Início:</label>
                                 <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
 
                             <div class="mb-3">
-                                <label for="end" class="col-form-label">Fim:</label>
+                                <label for="end" class="col-form-label">Término:</label>
                                 <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
                             </div>
 
-                            
                             <div class="mb-3">
                                 <label for="motivacao" class="col-form-label">Motivação:</label>
                                 <input type="text" name="motivacao" class="form-control" id="editMotivacao" placeholder="Digite o nome">
                             </div>
 
-
-                            
                             <div class="mb-3">
-                                <label for="participantes" class="col-form-label">Participantes:</label>
-                                <input type="text" name="participantes" class="form-control" id="editParticipantes" placeholder="Digite o nome">
+                                <label for="nome" class="col-form-label">Nome:</label>
+                                <input type="text" name="nome" class="form-control" id="editNome" placeholder="Digite o nome">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="observacao" class="col-form-label">Observação:</label>
+                                <input type="text" name="observacao" class="form-control" id="editObservacao" placeholder="Digite o nome">
                             </div>
 
 
@@ -346,7 +365,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
                                 <input type="submit" class="btn btn-outline-warning btn-sm" id="edit-reunioes-btn" value="Salvar" />
                             </div>
-
                         </form>
                     </div>
                 </div>
@@ -373,31 +391,31 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 
                 formData.append("add", 1);
 
-                const response = await fetch("cadastrarReunioes.php", {
+                const response = await fetch("cadastrarAtividades.php", {
                     method: "POST",
                     body: formData,
                 });
 
                 const data = await response.json();
                // Recarregar a página após o envio do formulário
-               if (!data.erro) {
+                if (!data.erro) {
                     window.location.reload();
                  }
             });
 
-            const tbody = document.querySelector(".listar_missions");
+            const tbody = document.querySelector(".listar_atividades");
 
             const listarMissions = async (pagina) => {
-                const data = await fetch("./tabelaReunioes.php?pagina=" + pagina);
+                const data = await fetch("./tabelaAtividades.php?pagina=" + pagina);
                 const resposta = await data.text();
                 tbody.innerHTML = resposta;
             }
 
             listarMissions(1);
 
-            // JavaScript para visualizar reunião da tabela
+            // JavaScript para visualizar afastamento da tabela
             async function visualizarReunioes(id){
-                const data = await fetch("visualizarReunioes.php?id=" + id);
+                const data = await fetch("visualizarAfastamentos.php?id=" + id);
                 const resposta = await data.json();
                 console.log(resposta);
 
@@ -409,31 +427,39 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                     document.getElementById("idType").innerHTML = resposta['dados'].tipo;
                     document.getElementById("idId").innerHTML = resposta['dados'].id;
+                    document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
                     document.getElementById("idColor").innerHTML = resposta['dados'].color;
                     document.getElementById("idStart").innerHTML = resposta['dados'].start;
                     document.getElementById("idEnd").innerHTML = resposta['dados'].end;
                     document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
-                    document.getElementById("idParticipantes").innerHTML = resposta['dados'].participantes;
+                    document.getElementById("idNome").innerHTML = resposta['dados'].nome;
+                    document.getElementById("idObservacao").innerHTML = resposta['dados'].observacao;
+            
+
 
                 }
             }
 
-            // JavaScript para editar reunião
+            // JavaScript para editar afastamento
             async function editReunioes(id){
-                const data = await fetch("visualizarReunioes.php?id=" + id);
+                const data = await fetch("visualizarAfastamentos.php?id=" + id);
                 const resposta = await data.json();
                 
                 if(resposta['erro']){
-                    alert('Erro: Reunião não encontrada');
+                    alert('Erro: Afastamento não encontrado');
                 } else {
                     const editModal = new bootstrap.Modal(document.getElementById("editReunioesModal"));
                     editModal.show();
 
                     document.getElementById("editid").value = resposta['dados'].id;
+                    document.getElementById("editOrd").value = resposta['dados'].ord;
                     document.getElementById("editStart").value = resposta['dados'].start;
                     document.getElementById("editEnd").value = resposta['dados'].end;
                     document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
-                    document.getElementById("editParticipantes").value = resposta['dados'].participantes;
+                    document.getElementById("editNome").value = resposta['dados'].nome;
+                    document.getElementById("editObservacao").value = resposta['dados'].observacao;
+                    
+
                 }
             }
 
@@ -442,7 +468,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 const formData = new FormData(editForm);
 
-                const response = await fetch("editReunioes.php", {
+                const response = await fetch("editAfastamentos.php", {
                     method: "POST",
                     body: formData,
                 });
@@ -461,10 +487,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
             // JavaScript para apagar registros
             async function apagarReunioes(id){
-                const confirmar = confirm("Tem certeza que deseja deletar a reunião?");
+                const confirmar = confirm("Tem certeza que deseja deletar o afastamento?");
 
                 if (confirmar == true){
-                    const data = await fetch('apagarReunioes.php?id=' + id);
+                    const data = await fetch('apagarAfastamentos.php?id=' + id);
                     const resposta = await data.json();
                     
                     if(resposta['erro']){
@@ -482,3 +508,4 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 </body>
 
 </html>
+

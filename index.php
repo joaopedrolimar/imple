@@ -43,30 +43,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <title>Intranet Calendario</title>
 
     <style>
-        /* Altera a cor de fundo do Calendário FullCalendar para preto */
-            .fc {
-                background-color: #22c1c3;
-                border: solid 20px 0px 20px 0px red;
-             }
-
-                         /* Altera a cor de fundo dos cabeçalhos do calendário */
-            .fc-toolbar {
-                background-color: #fff; /* escolha a cor que desejar */
-                padding: 30px;
-                text-transform: uppercase;
-            }
-
-            /* Altera a cor dos botões no cabeçalho do calendário */
-            .fc-toolbar button {
-                color: white; /* cor do texto */
-                background-color: #555; /* cor de fundo */
-                border-color: #555; /* cor da borda */
-            }
-
-            /* Altera a cor dos links */
-            a {
-                color: white;
-            }
 
             /* Altera a cor do botão de hoje */
             .fc-today-button {
@@ -128,6 +104,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/afastamentos/formAfastamentos.php">Afastamentos</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
+          </li>
+
 
           
           <?php if ($is_owner) : ?>
@@ -151,17 +131,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
     <div id="calendar-container">
       <div id='calendar' style='margin-top: 100px;'></div>
-    </div>
-
-
-
-    <div class="chart-container">
-        <canvas id="missionsChart"></canvas>
-    </div>
-
-
-    <div class="chart-container">
-        <canvas id="missionsColumnChart"></canvas>
     </div>
 
    
@@ -188,9 +157,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         </div>
     </div> 
 
-
-
-
     <!-- Modal Visualizar -->
     <div class="modal fade" id="visualizarModal" tabindex="-1" aria-labelledby="visualizarModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -212,7 +178,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                         <dt class="col-sm-3">Fim: </dt>
                         <dd class="col-sm-9" id="visualizar_end"></dd>
 
-                        
 
                     </dl>
 
@@ -221,6 +186,15 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         </div>
     </div>
     
+
+    
+<div class="chart-container">
+    <canvas id="missionsChart"></canvas>
+</div>
+
+<div class="chart-container">
+    <canvas id="absencesChart"></canvas>
+</div>
 
 
 
@@ -295,60 +269,14 @@ function renderMissionsChart(data) {
                 y: {
                     beginAtZero: true
                 }
-            }
-        }
-    });
-}
-
-// Quando um usuário clicar em um botão com o nome do usuário
-document.querySelectorAll('.user-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const userName = this.textContent; // Obtém o nome do usuário do texto do botão
-
-        // Faça uma solicitação AJAX para obter os dados das missões desse usuário
-        fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
-
-            .then(response => response.json())
-            .then(data => {
-                // Dados recebidos com sucesso, agora renderize o gráfico com os novos dados
-                renderMissionsChart(data);
-            })
-            .catch(error => {
-                console.error('Erro ao obter dados das missões:', error);
-            });
-    });
-});
-
-// Função para atualizar o gráfico com os novos dados do usuário selecionado
-function updateChart(data) {
-    // Verifica se o gráfico já existe, se sim, destrua-o
-    if (missionsChart) {
-        missionsChart.destroy();
-    }
-
-    // Obtém o contexto do canvas do gráfico
-    const ctx = document.getElementById('missionsChart').getContext('2d');
-
-    // Cria o novo gráfico de barras com os dados atualizados
-    missionsChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            // Labels para o eixo X (nomes das missões)
-            labels: data.map(missao => missao.motivacao),
-            datasets: [{
-                label: 'Missões do Usuário',
-                // Dados para o eixo Y (quantidade de missões)
-                data: data.map(missao => missao.id),
-                // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label;
+                        }
+                    }
                 }
             }
         }
@@ -358,20 +286,85 @@ function updateChart(data) {
 // Quando um usuário clicar em um botão com o nome do usuário
 document.querySelectorAll('.user-button').forEach(button => {
     button.addEventListener('click', function() {
-        const userName = this.textContent; // Obtém o nome do usuário do texto do botão
+        const userName = this.textContent.trim(); // Obtém o nome do usuário do texto do botão
 
         // Faça uma solicitação AJAX para obter os dados das missões desse usuário
         fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
             .then(response => response.json())
-            .then(data => {
-                // Dados recebidos com sucesso, agora atualize o gráfico com os novos dados
-                updateChart(data);
+            .then(missionsData => {
+                // Dados de missões recebidos com sucesso, agora faça a solicitação para os afastamentos
+                fetch('get_afastamentos_por_nome.php?userName=' + encodeURIComponent(userName))
+                    .then(response => response.json())
+                    .then(absencesData => {
+                        // Dados de afastamentos recebidos com sucesso, agora atualize ambos os gráficos
+                        updateCharts(missionsData, absencesData);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao obter dados de afastamentos:', error);
+                    });
             })
             .catch(error => {
-                console.error('Erro ao obter dados das missões:', error);
+                console.error('Erro ao obter dados de missões:', error);
             });
     });
 });
+
+// Função para atualizar os gráficos
+function updateCharts(missionsData, absencesData) {
+    renderMissionsChart(missionsData); // Renderiza o gráfico de missões
+    renderAbsencesChart(absencesData); // Renderiza o gráfico de afastamentos
+}
+
+
+// Declarar a variável absencesChart fora da função renderAbsencesChart
+let absencesChart;
+
+// Função para renderizar o gráfico de afastamentos
+function renderAbsencesChart(data) {
+    // Verifica se o gráfico de afastamentos já existe, se sim, destrua-o
+    if (absencesChart instanceof Chart) {
+        absencesChart.destroy();
+    }
+
+    // Obtém o contexto do canvas do gráfico de afastamentos
+    const ctx = document.getElementById('absencesChart').getContext('2d');
+
+    // Cria o gráfico de barras para os afastamentos
+    absencesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.map(afastamento => afastamento.nome),
+            datasets: [{
+                label: 'Afastamentos do Usuário',
+                data: data.map(afastamento => afastamento.total),
+                backgroundColor: 'rgba(60, 179, 113, 0.2)',
+                borderColor: 'rgba(60, 179, 113)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label;
+                        }
+                    }
+                }
+            }
+
+        }
+    });
+}
+
+
+
+
 
 </script>
 

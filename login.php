@@ -52,7 +52,7 @@
             </div>
 
             <div class="texto-login">
-                <span>INTRANET </span>
+                <span>INTRANET 2 </span>
             </div>
 
         </div>

@@ -167,6 +167,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/afastamentos/formAfastamentos.php">Afastamentos</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
+          </li>
+
 
           
           <?php if ($is_owner) : ?>
@@ -403,9 +407,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     </div>
 
     
-    <div class="chart-container">
-        <canvas id="missionsChart"></canvas>
-    </div>
+
 
 
     <div class="chart-container">
@@ -573,38 +575,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             }
 
 
-                    // JavaScript para renderizar o gráfico de missões
-        // Este código deve ser colocado abaixo da inclusão do arquivo Chart.js e dos dados do gráfico
-
-        // Função para renderizar o gráfico de missões
-        function renderMissionsChart(data) {
-            // Obtém o contexto do canvas do gráfico
-            const ctx = document.getElementById('missionsChart').getContext('2d');
-
-            // Cria o gráfico de linha
-            const missionsChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    // Labels para o eixo X (meses)
-                    labels: Object.keys(data),
-                    datasets: [{
-                        label: 'Missões por mês',
-                        // Dados para o eixo Y (número de missões)
-                        data: Object.values(data),
-                        // Personalizações adicionais do gráfico
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    // Personalizações adicionais do gráfico, se necessário
-                }
-            });
-        }
-
-        // Solicitação AJAX para obter os dados das missões
-// Solicitação AJAX para obter os dados das missões
 // Solicitação AJAX para obter os dados das missões
 fetch('../get_missions_data.php')
  // Verifique se este caminho está correto
