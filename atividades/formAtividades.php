@@ -215,6 +215,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 </div>
 
                 <div class="inputWrapp">
+                    <label for="ord">ORD:</label>
+                    <input type="text" name="ord" id="ord" class="inputAtividades" required>
+                </div>
+
+                <div class="inputWrapp">
                     <label for="produto">Produto:</label>
                     <input type="text" name="produto" id="produto" class="inputAtividades" required>
                 </div>
@@ -225,8 +230,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 </div>
 
                 <div class="inputWrapp">
-                    <label for="data">Início</label>
-                    <input type="datetime-local" name="data" id="data" class="inputAtividades" required>
+                    <label for="data">Data:</label>
+                    <input type="date" name="data" id="data" class="inputAtividades" required>
                 </div>
 
                 <div class="inputWrapp">
@@ -250,7 +255,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 </div>
 
                
-                     <button type="submit" class="enviar btn btn-primary inputWrapp">enviar</button>
+                     <button type="submit" class="enviar btn btn-primary inputWrapp" name="elaborado_por" value="<?php echo $_SESSION['user_id']; ?>" >enviar</button>
                
             </form>
         </div>
@@ -277,12 +282,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
         </div>
 
-        <!-- Modal para visualizar afastamento -->
-        <div class="modal fade" id="visualizarReunioes" tabindex="-1" aria-labelledby="visualizarReunioes" aria-hidden="true">
+        <!-- Modal para visualizar atividaes -->
+        <div class="modal fade" id="visualizarAtividades" tabindex="-1" aria-labelledby="visualizarAtividades" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="visualizarReunioes">Detalhes Afastamento</h5>
+                        <h5 class="modal-title" id="visualizarAtividades">Detalhes Atividades</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -294,18 +299,20 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <dd class="col-sm-9"><span id="idId"></span></dd>
                             <dt class="col-sm-3">ORD:</dt>
                             <dd class="col-sm-9"><span id="idOrd"></span></dd>
-                            <dt class="col-sm-3">Cor:</dt>
-                            <dd class="col-sm-9"><span id="idColor"></span></dd>
-                            <dt class="col-sm-3">Início:</dt>
-                            <dd class="col-sm-9"><span id="idStart"></span></dd>
-                            <dt class="col-sm-3">Término:</dt>
-                            <dd class="col-sm-9"><span id="idEnd"></span></dd>
-                            <dt class="col-sm-3">Afastamento:</dt>
-                            <dd class="col-sm-9"><span id="idMotivacao"></span></dd>
-                            <dt class="col-sm-3">Nome:</dt>
-                            <dd class="col-sm-9"><span id="idNome"></span></dd>
-                            <dt class="col-sm-3">Observação:</dt>
-                            <dd class="col-sm-9"><span id="idObservacao"></span></dd>
+                            <dt class="col-sm-3">Produto:</dt>
+                            <dd class="col-sm-9"><span id="idProduto"></span></dd>
+                            <dt class="col-sm-3">Quantidade:</dt>
+                            <dd class="col-sm-9"><span id="idQuantidade"></span></dd>
+                            <dt class="col-sm-3">Data:</dt>
+                            <dd class="col-sm-9"><span id="idData"></span></dd>
+                            <dt class="col-sm-3">H/H:</dt>
+                            <dd class="col-sm-9"><span id="idHora"></span></dd>
+                            <dt class="col-sm-3">Solicitante:</dt>
+                            <dd class="col-sm-9"><span id="idSolicitante_cliente"></span></dd>
+                            <dt class="col-sm-3">Documento:</dt>
+                            <dd class="col-sm-9"><span id="idDocumento"></span></dd>
+                            <dt class="col-sm-3">Elaborado por:</dt>
+                            <dd class="col-sm-9"><span id="idElaborado_por"></span></dd>
 
                         </dl>
                     </div>
@@ -313,12 +320,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             </div>
         </div>
 
-        <!-- Modal para editar afastamento -->
-        <div class="modal fade" id="editReunioesModal" tabindex="-1" aria-labelledby="editReunioesModalLabel" aria-hidden="true">
+        <!-- Modal para editar atividades -->
+        <div class="modal fade" id="editAtividadesModal" tabindex="-1" aria-labelledby="editAtividadesModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editReunioesModalLabel">Editar Afastamento</h5>
+                        <h5 class="modal-title" id="editAtividadesModalLabel">Editar Afastamento</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -333,31 +340,40 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                                 <label for="ord" class="col-form-label">ORD:</label>
                                 <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite a ORD">
                             </div>
-
-
+                            
                             <div class="mb-3">
-                                <label for="start" class="col-form-label">Início:</label>
-                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                                <label for="produto" class="col-form-label">Produto:</label>
+                                <input type="text" name="produto" class="form-control" id="editProduto" placeholder="Digite o Produto">
                             </div>
 
                             <div class="mb-3">
-                                <label for="end" class="col-form-label">Término:</label>
-                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                                <label for="quantidade" class="col-form-label">Quantidade:</label>
+                                <input type="text" name="quantidade" class="form-control" id="editQuantidade" placeholder="Digite o Quantidade">
                             </div>
 
                             <div class="mb-3">
-                                <label for="motivacao" class="col-form-label">Motivação:</label>
-                                <input type="text" name="motivacao" class="form-control" id="editMotivacao" placeholder="Digite o nome">
+                                <label for="data" class="col-form-label">Data:</label>
+                                <input type="date" name="data" class="form-control" id="editData">
                             </div>
 
                             <div class="mb-3">
-                                <label for="nome" class="col-form-label">Nome:</label>
-                                <input type="text" name="nome" class="form-control" id="editNome" placeholder="Digite o nome">
+                                <label for="hora" class="col-form-label">H/H:</label>
+                                <input type="text" name="hora" class="form-control" id="editHora" >
                             </div>
 
                             <div class="mb-3">
-                                <label for="observacao" class="col-form-label">Observação:</label>
-                                <input type="text" name="observacao" class="form-control" id="editObservacao" placeholder="Digite o nome">
+                                <label for="solicitante_cliente" class="col-form-label">Solicitante:</label>
+                                <input type="text" name="solicitante_cliente" class="form-control" id="editSolicitante_cliente" placeholder="Digite o nome">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="documento" class="col-form-label">Documento:</label>
+                                <input type="text" name="documento" class="form-control" id="editDocumento" placeholder="Digite o nome">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="elaborado_por" class="col-form-label">Elaborado por:</label>
+                                <input type="text" name="elaborado_por" class="form-control" id="editElaborado_por" placeholder="Digite o nome">
                             </div>
 
 
@@ -374,7 +390,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <!-- JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         
-        <script src="./js/bootstrap5/index.global.min.js"></script>
+        <script src="../js/bootstrap5/index.global.min.js"></script>
 
         <script>
             const msgAlerta = document.getElementById("msgAlerta");
@@ -413,51 +429,54 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
             listarMissions(1);
 
-            // JavaScript para visualizar afastamento da tabela
-            async function visualizarReunioes(id){
-                const data = await fetch("visualizarAfastamentos.php?id=" + id);
+            // JavaScript para visualizar atividades da tabela
+            async function visualizarAtividades(id){
+                const data = await fetch("visualizarAtividades.php?id=" + id);
                 const resposta = await data.json();
                 console.log(resposta);
 
                 if(resposta['erro']){
                     msgAlerta.innerHTML = resposta['msg']
                 } else {
-                    const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
+                    const viswModal = new bootstrap.Modal(document.getElementById("visualizarAtividades"));
                     viswModal.show();
 
                     document.getElementById("idType").innerHTML = resposta['dados'].tipo;
                     document.getElementById("idId").innerHTML = resposta['dados'].id;
                     document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
-                    document.getElementById("idColor").innerHTML = resposta['dados'].color;
-                    document.getElementById("idStart").innerHTML = resposta['dados'].start;
-                    document.getElementById("idEnd").innerHTML = resposta['dados'].end;
-                    document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
-                    document.getElementById("idNome").innerHTML = resposta['dados'].nome;
-                    document.getElementById("idObservacao").innerHTML = resposta['dados'].observacao;
+                    document.getElementById("idProduto").innerHTML = resposta['dados'].produto;
+                    document.getElementById("idQuantidade").innerHTML = resposta['dados'].quantidade;
+                    document.getElementById("idData").innerHTML = resposta['dados'].data;
+                    document.getElementById("idHora").innerHTML = resposta['dados'].hora;
+                    document.getElementById("idSolicitante_cliente").innerHTML = resposta['dados'].solicitante_cliente;
+                    document.getElementById("idDocumento").innerHTML = resposta['dados'].documento;
+                    document.getElementById("idElaborado_por").innerHTML = resposta['dados'].elaborado_por;
             
 
 
                 }
             }
 
-            // JavaScript para editar afastamento
-            async function editReunioes(id){
-                const data = await fetch("visualizarAfastamentos.php?id=" + id);
+            // JavaScript para editar atividades
+            async function editAtividades(id){
+                const data = await fetch("visualizarAtividades.php?id=" + id);
                 const resposta = await data.json();
                 
                 if(resposta['erro']){
                     alert('Erro: Afastamento não encontrado');
                 } else {
-                    const editModal = new bootstrap.Modal(document.getElementById("editReunioesModal"));
+                    const editModal = new bootstrap.Modal(document.getElementById("editAtividadesModal"));
                     editModal.show();
 
                     document.getElementById("editid").value = resposta['dados'].id;
                     document.getElementById("editOrd").value = resposta['dados'].ord;
-                    document.getElementById("editStart").value = resposta['dados'].start;
-                    document.getElementById("editEnd").value = resposta['dados'].end;
-                    document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
-                    document.getElementById("editNome").value = resposta['dados'].nome;
-                    document.getElementById("editObservacao").value = resposta['dados'].observacao;
+                    document.getElementById("editProduto").value = resposta['dados'].produto;
+                    document.getElementById("editQuantidade").value = resposta['dados'].quantidade;
+                    document.getElementById("editData").value = resposta['dados'].data;
+                    document.getElementById("editHora").value = resposta['dados'].hora;
+                    document.getElementById("editSolicitante_cliente").value = resposta['dados'].solicitante_cliente;
+                    document.getElementById("editDocumento").value = resposta['dados'].documento;
+                    document.getElementById("editElaborado_por").value = resposta['dados'].elaborado_por;
                     
 
                 }
@@ -468,7 +487,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 const formData = new FormData(editForm);
 
-                const response = await fetch("editAfastamentos.php", {
+                const response = await fetch("editAtividades.php", {
                     method: "POST",
                     body: formData,
                 });
@@ -485,12 +504,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 document.getElementById("edit-reunioes-btn").value = "Salvar";
             });
 
-            // JavaScript para apagar registros
-            async function apagarReunioes(id){
-                const confirmar = confirm("Tem certeza que deseja deletar o afastamento?");
+            // JavaScript para apagar atividades
+            async function apagarAtividades(id){
+                const confirmar = confirm("Tem certeza que deseja deletar a atividade?");
 
                 if (confirmar == true){
-                    const data = await fetch('apagarAfastamentos.php?id=' + id);
+                    const data = await fetch('apagarAtividades.php?id=' + id);
                     const resposta = await data.json();
                     
                     if(resposta['erro']){
