@@ -107,8 +107,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
           <li class="nav-item">
             <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
           </li>
-
-
           
           <?php if ($is_owner) : ?>
                     <li class="nav-item">
@@ -196,6 +194,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <canvas id="absencesChart"></canvas>
 </div>
 
+<div class="chart-container">
+    <canvas id="reunioesChart"></canvas>
+</div>
+
 
 
    
@@ -207,34 +209,50 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <script src='./js/custom.js'></script>
 
     <script>
-    // Função para lidar com o clique nos botões de usuário
-    document.addEventListener('DOMContentLoaded', function() {
-        // Selecione todos os botões de usuário
-        const userButtons = document.querySelectorAll('.user-button');
+   
 
-        // Adicione um evento de clique a cada botão
-        userButtons.forEach(button => {
-            button.addEventListener('click', function(event) {
-                // Evite que o link seja seguido
-                event.preventDefault();
 
-                // Obtenha o nome do usuário clicado
-                const userName = this.textContent.trim();
+/// Quando um usuário clicar em um botão com o nome do usuário
+document.querySelectorAll('.user-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const userName = this.textContent.trim(); // Obtém o nome do usuário do texto do botão
 
-                // Faça uma solicitação AJAX para recuperar os dados das missões do usuário
-                fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
-
+        // Faça uma solicitação AJAX para obter os dados das missões desse usuário
+        fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
+            .then(response => response.json())
+            .then(missionsData => {
+                // Dados de missões recebidos com sucesso, agora faça a solicitação para os afastamentos
+                fetch('get_afastamentos_por_nome.php?userName=' + encodeURIComponent(userName))
                     .then(response => response.json())
-                    .then(data => {
-                        // Dados recebidos com sucesso
-                        console.log(data); // Aqui você pode manipular os dados como desejar, por exemplo, renderizar um gráfico
+                    .then(absencesData => {
+                        // Dados de afastamentos recebidos com sucesso, agora faça a solicitação para as reuniões
+                        fetch('get_reunioes_por_nome.php?userName=' + encodeURIComponent(userName))
+                            .then(response => response.json())
+                            .then(reuniaoData => {
+                                // Dados de reuniões recebidos com sucesso, agora atualize todos os gráficos
+                                updateCharts(missionsData, absencesData, reuniaoData);
+                            })
+                            .catch(error => {
+                                console.error('Erro ao obter dados de reuniões:', error);
+                            });
                     })
                     .catch(error => {
-                        console.error('Erro ao obter dados das missões:', error);
+                        console.error('Erro ao obter dados de afastamentos:', error);
                     });
+            })
+            .catch(error => {
+                console.error('Erro ao obter dados de missões:', error);
             });
-        });
     });
+});
+
+// Função para atualizar os gráficos
+function updateCharts(missionsData, absencesData, reuniaoData) {
+    renderMissionsChart(missionsData); // Renderiza o gráfico de missões
+    renderAbsencesChart(absencesData); // Renderiza o gráfico de afastamentos
+    renderMeetingsChart(reuniaoData); // Renderiza o gráfico de reuniões
+}
+
 // Declarar a variável missionsChart fora da função renderMissionsChart
 let missionsChart;
 
@@ -283,36 +301,52 @@ function renderMissionsChart(data) {
     });
 }
 
-// Quando um usuário clicar em um botão com o nome do usuário
-document.querySelectorAll('.user-button').forEach(button => {
-    button.addEventListener('click', function() {
-        const userName = this.textContent.trim(); // Obtém o nome do usuário do texto do botão
+// Declarar a variável absencesChart fora da função renderAbsencesChart
+let reunioesChart;
 
-        // Faça uma solicitação AJAX para obter os dados das missões desse usuário
-        fetch('get_user_missions.php?userName=' + encodeURIComponent(userName))
-            .then(response => response.json())
-            .then(missionsData => {
-                // Dados de missões recebidos com sucesso, agora faça a solicitação para os afastamentos
-                fetch('get_afastamentos_por_nome.php?userName=' + encodeURIComponent(userName))
-                    .then(response => response.json())
-                    .then(absencesData => {
-                        // Dados de afastamentos recebidos com sucesso, agora atualize ambos os gráficos
-                        updateCharts(missionsData, absencesData);
-                    })
-                    .catch(error => {
-                        console.error('Erro ao obter dados de afastamentos:', error);
-                    });
-            })
-            .catch(error => {
-                console.error('Erro ao obter dados de missões:', error);
-            });
+// Função para renderizar o gráfico de reuniões
+function renderMeetingsChart(data) {
+    // Verifica se o gráfico já existe, se sim, destrua-o
+    if (reunioesChart instanceof Chart) {
+        reunioesChart.destroy();
+    }
+
+    // Obtém o contexto do canvas do gráfico
+    const ctx = document.getElementById('reunioesChart').getContext('2d');
+
+    // Cria o gráfico de barras
+    reunioesChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            // Labels para o eixo X (nomes das reuniões)
+            labels: data.map(reuniao => reuniao.motivacao), // Corrigido para 'nome' em vez de 'participantes'
+            datasets: [{
+                label: 'Reuniões do Usuário',
+                // Dados para o eixo Y (quantidade de reuniões)
+                data: data.map(reuniao => reuniao.id),
+                // Personalizações adicionais do gráfico
+                backgroundColor: 'rgba(60, 179, 113, 0.2)',
+                borderColor: 'rgba(60, 179, 113)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label;
+                        }
+                    }
+                }
+            }
+        }
     });
-});
-
-// Função para atualizar os gráficos
-function updateCharts(missionsData, absencesData) {
-    renderMissionsChart(missionsData); // Renderiza o gráfico de missões
-    renderAbsencesChart(absencesData); // Renderiza o gráfico de afastamentos
 }
 
 
@@ -361,6 +395,8 @@ function renderAbsencesChart(data) {
         }
     });
 }
+
+
 
 
 
