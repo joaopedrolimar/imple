@@ -325,8 +325,8 @@ function renderMeetingsChart(data) {
                 // Dados para o eixo Y (quantidade de reuniões)
                 data: data.map(reuniao => reuniao.id),
                 // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(60, 179, 113, 0.2)',
-                borderColor: 'rgba(60, 179, 113)',
+                backgroundColor: 'rgba(240,230,140,0.2)',
+                borderColor: 'rgba(255,215,0)',
                 borderWidth: 1
             }]
         },
