@@ -54,10 +54,14 @@ if (!empty($pagina)) {
                         <td>$documento</td>
                         <td>$elaborado_por</td>
                         <td>
+                        <div 
+                        class='btn-group' role='group' aria-label='Ações'>
                             <button id='$id' class='btn btn-success btn-sm' onclick='visualizarAtividades($id)'>Visualizar</button>
-                            <button id='$id' class='btn btn-warning btn-sm' onclick='editAtividades($id)'>Editar</button>
-                            <button id='$id' class='btn btn-danger btn-sm' onclick='apagarAtividades($id)'>Deletar</button>
 
+                            <button id='$id' class='btn btn-warning btn-sm' onclick='editAtividades($id)'>Editar</button>
+
+                            <button id='$id' class='btn btn-danger btn-sm' onclick='apagarAtividades($id)'>Deletar</button>
+                        </div>
                         </td>
                     </tr>";
         } else {
