@@ -433,6 +433,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         const msgAlerta = document.getElementById("msgAlerta");
         const editForm = document.getElementById("edit-usuario-form");
         const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
+
+        
         //java pra enviar formulario
         const form = document.querySelector('#form');
         
@@ -455,19 +457,35 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         if (!resposta.erro) {
              window.location.reload();
          }
-
         });
 
-        const tbody = document.querySelector(".listar_missions");
+// JavaScript para navegar na tabela de missões sem rolar para o topo
+const tbody = document.querySelector(".listar_missions");
 
-        const listarMissions = async (pagina) => {
-          const dadosMissions =  await fetch ("./tabelaMissions.php?pagina=" + pagina);
-          const respostaMissions = await dadosMissions.text();
-          tbody.innerHTML = respostaMissions;
+const listarMissions = async (pagina) => {
+    // Salva a posição atual da rolagem
+    const scrollPosition = window.scrollY || window.pageYOffset;
 
-        }
+    // Busca os dados da tabela de missões para a página especificada
+    const response = await fetch("./tabelaMissions.php?pagina=" + pagina);
+    const tableHtml = await response.text();
 
-        listarMissions(1);
+    // Atualiza o conteúdo da tabela de missões
+    tbody.innerHTML = tableHtml;
+
+    // Restaura a posição da rolagem após a atualização da tabela
+    window.scrollTo(0, scrollPosition);
+
+    // Ou, se você quiser rolar para um elemento específico na tabela:
+    // const table = document.getElementById('sua-tabela-id');
+    // table.scrollIntoView({ behavior: 'smooth' });
+};
+
+// Chama a função para carregar a lista de missões quando a página é carregada
+listarMissions(1);
+
+
+        
 
         //javaSc para visualizar pessoa da tabela
         
@@ -575,17 +593,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             }
 
 
-// Solicitação AJAX para obter os dados das missões
-fetch('../get_missions_data.php')
- // Verifique se este caminho está correto
-    .then(response => response.json())
-    .then(data => {
-        // Dados recebidos com sucesso, agora renderize o gráfico
-        renderMissionsChart(data);
-    })
-    .catch(error => {
-        console.error('Erro ao obter dados das missões:', error);
-    });
+
 
     // Função para renderizar o gráfico de missões (colunas)
 function renderMissionsColumnChart(data) {
@@ -603,7 +611,7 @@ function renderMissionsColumnChart(data) {
                 // Dados para o eixo Y (número de missões)
                 data: Object.values(data),
                 // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                backgroundColor: 'rgba(54, 162, 235, 0.9)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
@@ -625,8 +633,9 @@ fetch('../get_missions_data.php')
         console.error('Erro ao obter dados das missões:', error);
     });
 
-        
 
+
+        
 
     </script>
 

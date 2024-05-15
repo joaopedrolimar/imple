@@ -114,9 +114,13 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             }
             .btn-group .btn {
                 margin-bottom: 9px; /* Adiciona uma margem entre os botões */
-            }
-
-            
+            }   
+        }
+        
+        .chart-container {
+            max-width: 800px; /* Largura máxima para o gráfico */
+            margin: 0 auto; /* Centraliza o gráfico na página */
+            margin-top: 20px; /* Espaçamento superior para separar do calendário */
         }
     </style>
 
@@ -353,10 +357,16 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             </div>
         </div>
 
+        <div class="chart-container">
+            <canvas id="reunioesColumnChart"></canvas>
+        </div>
+
+
         <!-- JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         
         <script src="./js/bootstrap5/index.global.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
             const msgAlerta = document.getElementById("msgAlerta");
@@ -385,15 +395,34 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                  }
             });
 
-            const tbody = document.querySelector(".listar_missions");
 
-            const listarMissions = async (pagina) => {
-                const data = await fetch("./tabelaReunioes.php?pagina=" + pagina);
-                const resposta = await data.text();
-                tbody.innerHTML = resposta;
-            }
 
-            listarMissions(1);
+            
+// JavaScript para navegar na tabela de missões sem rolar para o topo
+const tbody = document.querySelector(".listar_missions");
+
+const listarMissions = async (pagina) => {
+    // Salva a posição atual da rolagem
+    const scrollPosition = window.scrollY || window.pageYOffset;
+
+    // Busca os dados da tabela de missões para a página especificada
+    const response = await fetch("./tabelaReunioes.php?pagina=" + pagina);
+    const tableHtml = await response.text();
+
+    // Atualiza o conteúdo da tabela de missões
+    tbody.innerHTML = tableHtml;
+
+    // Restaura a posição da rolagem após a atualização da tabela
+    window.scrollTo(0, scrollPosition);
+
+    // Ou, se você quiser rolar para um elemento específico na tabela:
+    // const table = document.getElementById('sua-tabela-id');
+    // table.scrollIntoView({ behavior: 'smooth' });
+};
+
+// Chama a função para carregar a lista de missões quando a página é carregada
+listarMissions(1);
+
 
             // JavaScript para visualizar reunião da tabela
             async function visualizarReunioes(id){
@@ -475,6 +504,60 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     }
                 }
             }
+
+    // Solicitação AJAX para obter os dados das reuniões
+fetch('../get_reunioes_data.php')
+ // Verifique se este caminho está correto
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico
+        renderReunioesChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das reunioes:', error);
+    });
+
+    // Função para renderizar o gráfico de missões (colunas)
+function renderReunioesColumnChart(data) {
+    // Obtém o contexto do canvas do gráfico
+    const ctx = document.getElementById('reunioesColumnChart').getContext('2d');
+
+    // Cria o gráfico de colunas
+    const reunioesColumnChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            // Labels para o eixo X (meses)
+            labels: Object.keys(data),
+            datasets: [{
+                label: 'Reuniões por mês',
+                // Dados para o eixo Y (número de missões)
+                data: Object.values(data),
+                // Personalizações adicionais do gráfico
+                backgroundColor: 'rgba(240,230,140,0.9)',
+                borderColor: 'rgba(255,215,0)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            // Personalizações adicionais do gráfico, se necessário
+        }
+    });
+}
+
+// Solicitação AJAX para obter os dados das missões
+fetch('../get_reunioes_data.php')
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico de colunas
+        renderReunioesColumnChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das missões:', error);
+    });
+
+        
+
+
         </script>
 
     </div>

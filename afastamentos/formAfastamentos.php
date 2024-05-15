@@ -118,6 +118,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
             
         }
+        .chart-container {
+            max-width: 800px; /* Largura máxima para o gráfico */
+            margin: 0 auto; /* Centraliza o gráfico na página */
+            margin-top: 20px; /* Espaçamento superior para separar do calendário */
+        }
 
 
     </style>
@@ -372,10 +377,15 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             </div>
         </div>
 
+        <div class="chart-container">
+            <canvas id="afastamentosColumnChart"></canvas>
+        </div>
+
         <!-- JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
         
         <script src="./js/bootstrap5/index.global.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
             const msgAlerta = document.getElementById("msgAlerta");
@@ -404,15 +414,39 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                  }
             });
 
-            const tbody = document.querySelector(".listar_missions");
 
-            const listarMissions = async (pagina) => {
-                const data = await fetch("./tabelaAfastamentos.php?pagina=" + pagina);
-                const resposta = await data.text();
-                tbody.innerHTML = resposta;
-            }
 
-            listarMissions(1);
+           
+
+// JavaScript para navegar na tabela de afastamentos sem rolar para o topo
+const tbody = document.querySelector(".listar_missions");
+
+
+const listarMissions = async (pagina) => {
+    // Salva a posição atual da rolagem
+    const scrollPosition = window.scrollY || window.pageYOffset;
+
+    // Busca os dados da tabela de missões para a página especificada
+    const response = await fetch("./tabelaAfastamentos.php?pagina=" + pagina);
+    const tableHtml = await response.text();
+
+    // Atualiza o conteúdo da tabela de missões
+    tbody.innerHTML = tableHtml;
+
+    // Restaura a posição da rolagem após a atualização da tabela
+    window.scrollTo(0, scrollPosition);
+
+    // Ou, se você quiser rolar para um elemento específico na tabela:
+    // const table = document.getElementById('sua-tabela-id');
+    // table.scrollIntoView({ behavior: 'smooth' });
+};
+
+// Chama a função para carregar a lista de missões quando a página é carregada
+listarMissions(1);
+
+
+
+            
 
             // JavaScript para visualizar afastamento da tabela
             async function visualizarReunioes(id){
@@ -502,6 +536,56 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     }
                 }
             }
+
+               // Solicitação AJAX para obter os dados das reuniões
+fetch('../get_afastamentos_data.php')
+ // Verifique se este caminho está correto
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico
+        renderAfastamentosChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das afastamentos:', error);
+    });
+
+    // Função para renderizar o gráfico de missões (colunas)
+function renderAfastamentosColumnChart(data) {
+    // Obtém o contexto do canvas do gráfico
+    const ctx = document.getElementById('afastamentosColumnChart').getContext('2d');
+
+    // Cria o gráfico de colunas
+    const afastamentosColumnChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            // Labels para o eixo X (meses)
+            labels: Object.keys(data),
+            datasets: [{
+                label: 'Afastamentos por mês',
+                // Dados para o eixo Y (número de missões)
+                data: Object.values(data),
+                // Personalizações adicionais do gráfico
+                backgroundColor: 'rgba(60, 179, 113, 0.9)',
+                borderColor: 'rgba(60, 179, 113)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            // Personalizações adicionais do gráfico, se necessário
+        }
+    });
+}
+
+// Solicitação AJAX para obter os dados das missões
+fetch('../get_afastamentos_data.php')
+    .then(response => response.json())
+    .then(data => {
+        // Dados recebidos com sucesso, agora renderize o gráfico de colunas
+        renderAfastamentosColumnChart(data);
+    })
+    .catch(error => {
+        console.error('Erro ao obter dados das missões:', error);
+    });
         </script>
 
     </div>

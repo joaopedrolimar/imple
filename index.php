@@ -50,14 +50,13 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 background-color: #555;
                 border-color: #555;
             }
+            
             .chart-container {
             max-width: 800px; /* Largura máxima para o gráfico */
             margin: 0 auto; /* Centraliza o gráfico na página */
             margin-top: 20px; /* Espaçamento superior para separar do calendário */
         }
-
-          
-
+  
     </style>
 </head>
 
@@ -277,7 +276,7 @@ function renderMissionsChart(data) {
                 // Dados para o eixo Y (quantidade de missões)
                 data: data.map(missao => missao.id),
                 // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                backgroundColor: 'rgba(54, 162, 235, 0.9)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1
             }]
@@ -325,7 +324,7 @@ function renderMeetingsChart(data) {
                 // Dados para o eixo Y (quantidade de reuniões)
                 data: data.map(reuniao => reuniao.id),
                 // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(240,230,140,0.2)',
+                backgroundColor: 'rgba(240,230,140,0.9)',
                 borderColor: 'rgba(255,215,0)',
                 borderWidth: 1
             }]
@@ -371,7 +370,7 @@ function renderAbsencesChart(data) {
             datasets: [{
                 label: 'Afastamentos do Usuário',
                 data: data.map(afastamento => afastamento.total),
-                backgroundColor: 'rgba(60, 179, 113, 0.2)',
+                backgroundColor: 'rgba(60, 179, 113, 0.9)',
                 borderColor: 'rgba(60, 179, 113)',
                 borderWidth: 1
             }]
