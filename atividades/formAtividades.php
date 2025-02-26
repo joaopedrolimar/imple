@@ -8,6 +8,13 @@ if (!isset($_SESSION["user_id"])) {
 // Verificar se o usuário é o proprietário
 $is_owner = ($_SESSION["permissao"] === "owner");
 
+include_once "../conexao.php";
+
+// Consulta para obter os nomes dos usuários da tabela policiais
+$query_usuarios = "SELECT username FROM policiais WHERE aprovado = 1";
+$result_usuarios = $conn->query($query_usuarios);
+$usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 
@@ -23,7 +30,16 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
     <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon">
 
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/css/multi-select-tag.css">
+
+    
+
+    
+
     <style>
+
+        
          /* Estilos gerais */
         body {
             background-color: #f8f9fa;
@@ -171,7 +187,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/alterarSenha.php">Alterar Senha</a>
+          </li>
 
+
+          
           
           <?php if ($is_owner) : ?>
                     <li class="nav-item">
@@ -245,14 +266,36 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 </div>
 
                 <div class="inputWrapp">
-                    <label for="documento">documento:</label>
-                    <input type="text" name="documento" id="documento" class="inputAtividades" >
+                    <label for="documento">Documento:</label>
+                   
+                    <select name="documento" id="documento" class="inputAtividades">
+                        <option value="">Selecionar</option>
+                        <option value="documento A">Documento A</option>
+                        <option value="documento B">Documento B</option>
+                        <option value="documento C">Documento C</option>
+                                                <option value="documento B">Documento B</option>
+                        <option value="documento C">Documento C</option>
+                    </select>
                 </div>
 
+               
                 <div class="inputWrapp">
                     <label for="elaborado_por">Elaborado por:</label>
-                    <input type="text" name="elaborado_por" id="elaborado_por" class="inputAtividades" required>
+
+                    <select class="inputAtividades" name="elaborado_por[]" id="elaborado_por"  multiple>
+
+                        <?php foreach ($usuarios as $usuario) : ?>
+                            <option value="<?php echo $usuario['username']; ?>">
+                                <?php echo $usuario['username']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                        
+
+                    </select>
                 </div>
+                <br>
+
+
 
                
                      <button type="submit" class="enviar btn btn-primary inputWrapp" name="elaborado_por" value="<?php echo $_SESSION['user_id']; ?>" >enviar</button>
@@ -368,13 +411,18 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                             <div class="mb-3">
                                 <label for="documento" class="col-form-label">Documento:</label>
-                                <input type="text" name="documento" class="form-control" id="editDocumento" placeholder="Digite o nome">
+                                    <select name="documento" id="editDocumento" class="form-control">
+                                        <option value="documento A">Documento A</option>
+                                        <option value="documento B">Documento B</option>
+                                        <option value="documento C">Documento C</option>
+                                    </select>
                             </div>
 
                             <div class="mb-3">
                                 <label for="elaborado_por" class="col-form-label">Elaborado por:</label>
                                 <input type="text" name="elaborado_por" class="form-control" id="editElaborado_por" placeholder="Digite o nome">
                             </div>
+
 
 
                             <div class="modal-footer">
@@ -392,19 +440,31 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         
         <script src="../js/bootstrap5/index.global.min.js"></script>
 
+
+        <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@3.0.1/dist/js/multi-select-tag.js"></script>
+        <script>
+            new MultiSelectTag  ('elaborado_por')  // id
+        </script>
+
+        
+
         <script>
             const msgAlerta = document.getElementById("msgAlerta");
             const editForm = document.getElementById("edit-reunioes-form");
             const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
             
-            // JavaScript para enviar formulário
             const form = document.querySelector('#form');
-            
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
+
                 const formData = new FormData(form);
-                
+
+                // Converter os valores selecionados em um array
+                const selectedUsers = Array.from(formData.getAll('elaborado_por[]'));
+
+                // Substituir o valor de elaborado_por com o array de usuários selecionados
+                formData.set('elaborado_por', JSON.stringify(selectedUsers));
+
                 formData.append("add", 1);
 
                 const response = await fetch("cadastrarAtividades.php", {
@@ -413,11 +473,13 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 });
 
                 const data = await response.json();
-               // Recarregar a página após o envio do formulário
+
+                // Recarregar a página após o envio do formulário
                 if (!data.erro) {
                     window.location.reload();
-                 }
+                }
             });
+
 
             const tbody = document.querySelector(".listar_atividades");
 
@@ -457,8 +519,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 }
             }
 
-            // JavaScript para editar atividades
-            async function editAtividades(id){
+ // JavaScript para editar atividades
+ async function editAtividades(id){
                 const data = await fetch("visualizarAtividades.php?id=" + id);
                 const resposta = await data.json();
                 

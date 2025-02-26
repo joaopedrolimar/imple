@@ -176,6 +176,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/alterarSenha.php">Alterar Senha</a>
+          </li>
+
 
           
           <?php if ($is_owner) : ?>

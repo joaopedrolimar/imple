@@ -1,3 +1,4 @@
+/* login2.php*/
 body {
     font-family: Open Sans, sans-serif;
     font-weight: 300;
@@ -7,6 +8,9 @@ body {
     width: 550px;
     height: 113px;
     margin: 3% auto;
+}
+button{
+    cursor: pointer;
 }
 
 
@@ -52,6 +56,7 @@ img {
 
 .text-center {
     text-align: center;
+    
    
 }
 
@@ -80,11 +85,15 @@ input:focus {
     width: 100%; /* Define a largura dos botões igual à largura dos inputs */
     display: flex; /* Para centralizar os botões */
     justify-content: center; /* Alinhamento dos botões no centro horizontal */
+    
 }
 
 .btn-login, .btn-login-limpar {
     margin: 10px; /* Espaçamento entre os botões */
+  
 }
+
+
 
 
 .btn-login-limpar {
@@ -100,11 +109,15 @@ input:focus {
 
 button, select {
     text-transform: none;
+   
+    
+    
 }
 
 
 .formulario-login .btn-login, .botoes-login .btn-login {
     width: 100px;
+    
     height: 35px;
     padding: 5px 10px;
     float: right;

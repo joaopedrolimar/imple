@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
     <title>Criar Conta</title>
 
     <script>
-        // Função para atualizar dinamicamente a data na página de login
+        // Função para atualizar dinamicamente a data na página de criar conta
         function atualizarData() {
             // Obter o elemento onde a data será exibida
             var dataElement = document.getElementById("data-atual");
@@ -31,94 +32,126 @@
             dataElement.textContent = "Brasília - " + diaSemana + ", " + dia + " de " + mes + " de " + ano;
         }
 
+        // Função para limpar os campos do formulário de criar conta
+        function limparCampos() {
+            document.getElementById("username").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+            document.getElementById("question1").value = "";
+            document.getElementById("answer1").value = "";
+            document.getElementById("question2").value = "";
+            document.getElementById("answer2").value = "";
+        }
+
         // Chamar a função para atualizar a data quando a página carregar
-        window.onload = function() {
+        window.onload = function () {
             atualizarData();
         };
     </script>
 </head>
+
 <body>
-<div id="topo-login">
-    <div class="logo-login">
-        <a href="./login.php"><img src="https://intranet.sipam.gov.br/templates/shaper_helix3/images/logo-cnmp.png" alt="intranet inteligencia"></a>
-    </div>
-
-    <div class="texto-login">
-        <span>INTRANET</span>
-    </div>
-
-</div>
-
-
-<div class="data-login">
-            <!-- Elemento HTML para exibir a data atual -->
-            <p id="data-atual">Brasília - Segunda, 29 de Abril de 2024</p>
+    <div id="topo-login">
+        <div class="logo-login">
+            <a href="./login.php"><img src="https://intranet.sipam.gov.br/templates/shaper_helix3/images/logo-cnmp.png"
+                    alt="intranet inteligencia"></a>
         </div>
 
-<section id="sp-componentes">
-    <div class="container">
-        <div class="row">
-            <div id="sp-component" class="col-sm-12 col-md-12">
-                <div class="sp-column ">
-                    <div id="system-message-container">
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-4 col-sm-offset-4 text-center">
-                            <div class="login">
+        <div class="texto-login">
+            <span>INTRANET</span>
+        </div>
+    </div>
 
-                                <form action="processar_criar_conta.php" method="post" class="form-validate">
+    <div class="data-login">
+        <!-- Elemento HTML para exibir a data atual -->
+        <p id="data-atual">Brasília - Segunda, 29 de Abril de 2024</p>
+    </div>
 
+    <section id="sp-componentes">
+        <div class="container">
+            <div class="row">
+                <div id="sp-component" class="col-sm-12 col-md-12">
+                    <div class="sp-column ">
+                        <div id="system-message-container"></div>
+                        <div class="row">
+                            <div class="col-sm-4 col-sm-offset-4 text-center">
+                                <div class="login">
+                                    <form action="processar_criar_conta.php" method="post" class="form-validate">
 
-                                    <div class="form-group">
-                                        <div class="group-control">
-                                            <input type="text"   class="validate-username required" size="25" id="username" name="username" placeholder="Usuário"  required aria-required="true" autofocus />
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="text" class="validate-username required" size="25"
+                                                    id="username" name="username" placeholder="Usuário" required
+                                                    aria-required="true" autofocus />
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-
-                                        <div class="group-control">
-                                            <input type="email" id="email" name="email"  placeholder="Email" class="validate-password required" size="25" maxlength="99" required aria-required="true" />
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="email" id="email" name="email" placeholder="Email"
+                                                    class="validate-password required" size="25" maxlength="99" required
+                                                    aria-required="true" />
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-
-                                        <div class="group-control">
-                                            <input type="password" name="password" id="password"  placeholder="Senha" class="validate-password required" size="25" maxlength="99" required aria-required="true" />
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="password" name="password" id="password" placeholder="Senha"
+                                                    class="validate-password required" size="25" maxlength="99" required
+                                                    aria-required="true" />
+                                            </div>
                                         </div>
-                                       
-                                    </div>
 
-                                    <div class="form-group botoes-login">
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="text" id="question1" name="question1"
+                                                    placeholder="Pergunta de Segurança 1" required aria-required="true" />
+                                            </div>
+                                        </div>
 
-                                        <button type="button" class="btn-login-limpar">
-                                            Limpar
-                                        </button>
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="text" id="answer1" name="answer1" placeholder="Resposta"
+                                                    required aria-required="true" />
+                                            </div>
+                                        </div>
 
-                                        <button type="submit" class="btn-login">
-                                            Criar
-                                        </button>
-                                    </div>
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="text" id="question2" name="question2"
+                                                    placeholder="Pergunta de Segurança 2" required aria-required="true" />
+                                            </div>
+                                        </div>
 
-                                    <div class="links">
-                                        <a href="./login.php">Já tem uma conta? Faça login</a>
-                                    </div>
-                                </form>
+                                        <div class="form-group">
+                                            <div class="group-control">
+                                                <input type="text" id="answer2" name="answer2" placeholder="Resposta"
+                                                    required aria-required="true" />
+                                            </div>
+                                        </div>
 
+                                        <div class="form-group botoes-login">
+                                            <button type="button" class="btn-login-limpar" onclick="limparCampos()">
+                                                Limpar
+                                            </button>
+
+                                            <button type="submit" class="btn-login">
+                                                Criar
+                                            </button>
+                                        </div>
+
+                                        <div class="links">
+                                            <a href="./login.php">Já tem uma conta? Faça login</a>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-</div>
-
+    </section>
 </body>
+
 </html>
-
-
-

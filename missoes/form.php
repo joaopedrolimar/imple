@@ -171,6 +171,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
           </li>
 
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/alterarSenha.php">Alterar Senha</a>
+          </li>
+
 
           
           <?php if ($is_owner) : ?>
@@ -249,10 +253,32 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
                 </div>
 
+
+
+                <!--PARTICIPANTES-->
                 <div class="inputWrapp">
+
                     <label for="participantes">Participantes</label>
                     <input type="text" name="participantes" id="participantes" class="inputAfastamentos">
+
                 </div>
+
+
+                <div class="inputWrapp">
+                    <label for="elaborado_por">Elaborado por:</label>
+
+                    <select class="inputAtividades" name="elaborado_por[]" id="elaborado_por"  multiple>
+
+                        <?php foreach ($usuarios as $usuario) : ?>
+                            <option value="<?php echo $usuario['username']; ?>">
+                                <?php echo $usuario['username']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                        
+
+                    </select>
+                </div>
+
 
                 <div class="inputWrapp">
                     <label for="funcao">Função</label>

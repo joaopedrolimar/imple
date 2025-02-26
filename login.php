@@ -36,9 +36,15 @@
         }
 
         // Chamar a função para atualizar a data quando a página carregar
-        window.onload = function() {
+        window.onload = function () {
             atualizarData();
         };
+
+        // Função para limpar os campos de login
+        function limparCampos() {
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
     </script>
 </head>
 
@@ -52,7 +58,7 @@
             </div>
 
             <div class="texto-login">
-                <span>INTRANET 2 </span>
+                <span>INTRANET  </span>
             </div>
 
         </div>
@@ -80,7 +86,7 @@
                                             <div class="form-group">
 
                                                 <div class="group-control">
-                                                    <input type="text" name="username" id="username"  class="validate-username required" size="25" placeholder="Login" required aria-required="true" autofocus />
+                                                    <input type="text" name="username" id="username" class="validate-username required" size="25" placeholder="Login" required aria-required="true" autofocus />
                                                 </div>
 
                                             </div>
@@ -88,25 +94,32 @@
                                             <div class="form-group">
 
                                                 <div class="group-control">
-                                                    <input type="password" name="password" id="password"  placeholder="Senha" class="validate-password required" size="25" maxlength="99" required aria-required="true" />
+                                                    <input type="password" name="password" id="password" placeholder="Senha" class="validate-password required" size="25" maxlength="99" required aria-required="true" />
                                                 </div>
 
                                             </div>
 
                                             <div class="form-group botoes-login">
 
-                                                <button type="button" class="btn-login-limpar">
+                                                <button type="button" class="btn-login-limpar" onclick="limparCampos()">
                                                     Limpar
                                                 </button>
 
                                                 <button type="submit" class="btn-login">
-                                                    Entrar 
+                                                    Entrar
                                                 </button>
                                             </div>
 
                                             <div class="links">
                                                 <a href="./criar_conta.php">Criar conta</a>
                                             </div>
+
+
+                                            <div class="links">
+                                                <a href="./esqueci/esqueci_senha.php">Esqueci a Senha</a>
+                                            </div>
+
+
                                         </form>
 
                                     </div>

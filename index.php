@@ -16,9 +16,6 @@ $query_usuarios = "SELECT username FROM policiais WHERE aprovado = 1";
 $result_usuarios = $conn->query($query_usuarios);
 $usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
 
-// Verificar se o usuário é o proprietário
-$is_owner = ($_SESSION["permissao"] === "owner");
-?>
 ?>
 
 
@@ -43,6 +40,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <title>Intranet Calendario</title>
 
     <style>
+       
 
             /* Altera a cor do botão de hoje */
             .fc-today-button {
@@ -71,7 +69,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- Restante do seu código -->
     </div>
 </nav>
 
@@ -107,6 +104,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
             <a class="nav-link" href="/imple/atividades/formAtividades.php">Atividades</a>
           </li>
           
+          <li class="nav-item">
+            <a class="nav-link" href="/imple/alterarSenha.php">Alterar Senha</a>
+          </li>
+
+
           <?php if ($is_owner) : ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/imple/notificacoes/notificacoes.php">Notificações</a>
@@ -154,6 +156,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         </div>
     </div> 
 
+
     <!-- Modal Visualizar -->
     <div class="modal fade" id="visualizarModal" tabindex="-1" aria-labelledby="visualizarModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -199,6 +202,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
 
 
+
+
    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src='./js/index.global.min.js'></script>
@@ -206,6 +211,8 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     <script src="./js/bootstrap5/index.global.min.js"></script>
     <script src='./js/core/locales-all.global.min.js'></script>
     <script src='./js/custom.js'></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
 
     <script>
    
@@ -362,7 +369,7 @@ function renderAbsencesChart(data) {
     // Obtém o contexto do canvas do gráfico de afastamentos
     const ctx = document.getElementById('absencesChart').getContext('2d');
 
-    // Cria o gráfico de barras para os afastamentos
+    // Cria o gráfico de barras para os afasta
     absencesChart = new Chart(ctx, {
         type: 'bar',
         data: {
