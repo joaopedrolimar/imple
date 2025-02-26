@@ -1,5 +1,5 @@
+<!--/missoes/tabelaMissions.php-->
 <?php
-
 include_once "../conexao.php";
 
 $pagina = filter_input(INPUT_GET, "pagina", FILTER_SANITIZE_NUMBER_INT);
@@ -13,68 +13,67 @@ if(!empty($pagina)){
     
     
 
+    $query_missions = "SELECT m.id, m.tipo, m.start, m.end, m.funcao, m.motivacao, m.participantes, 
+    COALESCE(p.username, 'Não informado') AS elaborado_por
+FROM missoes m
+LEFT JOIN policiais p ON m.elaborado_por = p.id
+ORDER BY m.id ASC
+LIMIT $inicio, $qnt_missions_pg";
 
-        $query_missions = "SELECT id, tipo, ord,color,start,end, funcao, motivacao, participantes FROM  missoes ORDER BY id ASC LIMIT $inicio, $qnt_missions_pg";
+
+
         $resultado_missions = $conn->prepare($query_missions);
         $resultado_missions->execute();
 
 
         $dados_missions ="<div class='table-responsive'>
-        <table class='table table-striped table-bordered  table table-bordered border-white table-dark'>
+        <table class='table table-striped table-bordered table table-bordered border-white table-dark'>
             <thead>
                 <tr>
-                <th scope='col'>ID</th>
-                <th scope='col'>TIPO</th>
-                <th scope='col'>ORD</th>
-                <th scope='col'>Cor</th>
-                <th scope='col'>Início</th>
-                <th scope='col'>Término</th>
-                <th scope='col'>Motivação</th>
-                <th scope='col'>Participantes</th>
-                <th scope='col'>Função</th>
-                <th scope='col'>Editar</th>
+                    <th scope='col'>ID</th>
+                    <th scope='col'>TIPO</th>
+                    <th scope='col'>Início</th>
+                    <th scope='col'>Término</th>
+                    <th scope='col'>Motivação</th>
+                    <th scope='col'>Participantes</th>
+                    <th scope='col'>Elaborado por</th>
+                    <th scope='col'>Função</th>
+                    <th scope='col'>Editar</th>
                 </tr>
             </thead>
             <tbody>";
+        
 
 
-        while($row_missions = $resultado_missions->fetch(PDO::FETCH_ASSOC)){
-            
-            extract($row_missions);
+            while($row_missions = $resultado_missions->fetch(PDO::FETCH_ASSOC)) {
+                extract($row_missions);
                 
-            $dados_missions .= "<tr>
-            <td>$id</td>
-            <td>$tipo</td>
-            <td>$ord</td>
-            <td>$color</td>
-            <td>$start</td>
-            <td>$end</td>
-            <td>$motivacao</td>
-            <td>$participantes</td>
-            <td>$funcao</td>
+                $dados_missions .= "<tr>
+                    <td>$id</td>
+                    <td>$tipo</td>
+                    <td>$start</td>
+                    <td>$end</td>
+                    <td>$motivacao</td>
+                    <td>$participantes</td>
+                    <td>" . (!empty($elaborado_por) ? $elaborado_por : "Não informado") . "</td>
+                    <td>$funcao</td>
+                    <td>
+                        <div class='btn-group' role='group' aria-label='Ações'>
 
-            <td>
-            <div 
-            class='btn-group' role='group' aria-label='Ações'>
-            <button id='<?php echo $id; ?>' class='btn btn-success 
-            
-            btn-sm' onclick='visualizarMissoes($id)'>Visualizar</button>
-            <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editMissoes($id)'>Editar</button>
-            
-            <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarMissoes($id)'>Deletar</button>
-            </div>
-            </td>
-            
-            
+                            <button class='btn btn-success btn-sm' onclick='visualizarMissoes($id)'>Visualizar</button>
 
+                            
+                            <button class='btn btn-warning btn-sm' onclick='editMissoes($id)'>Editar</button>
+                            <button class='btn btn-danger btn-sm' onclick='apagarMissoes($id)'>Deletar</button>
+                        </div>
+                    </td>
+                </tr>";
+            }
             
-
             
-
-            
-            </tr> "; 
+        
                     
-        }
+        
 
         $dados_missions .= "
                     </tbody>

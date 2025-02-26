@@ -41,6 +41,14 @@ $usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
 
     <style>
        
+                body {
+                padding-top: 70px; /* Ajuste esse valor conforme necessário */
+            }
+
+                        #calendar {
+                margin-top: 70px; /* Ajuste o valor se necessário */
+            }
+
 
             /* Altera a cor do botão de hoje */
             .fc-today-button {

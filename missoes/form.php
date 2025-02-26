@@ -1,3 +1,4 @@
+<!--/missoes/form.php-->
 <?php
 session_start();
 if (!isset($_SESSION["user_id"])) {
@@ -8,6 +9,13 @@ if (!isset($_SESSION["user_id"])) {
 // Verificar se o usuário é o proprietário
 $is_owner = ($_SESSION["permissao"] === "owner");
 
+// Conexão com o banco
+include '../conexao.php';
+
+// Consulta para pegar os usuários cadastrados
+$query = "SELECT id, username FROM policiais"; 
+  // Ajuste 'usuarios' para o nome correto da tabela
+$result = $conn->query($query);
 ?>
 
 
@@ -181,7 +189,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <li class="nav-item">
                         <a class="nav-link" href="/imple/notificacoes/notificacoes.php">Notificações</a>
                     </li>
-                    <?php endif; ?>
+            <?php endif; ?>
 
           
 
@@ -228,11 +236,9 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                     <input type="text" name="tipo" id="tipo" class="inputAfastamentos" value="Reuniões" readonly>
                 </div>
               
-                <div class="inputWrapp">
-                    <label for="ord">ORD:</label>
-                    <input type="text" name="ord" id="ord" class="inputAfastamentos" required>
-                </div>
-                
+
+
+
                 <p id="color">Color:</p>
                 <select name="color" class="inputAfastamentos" id="color">
                     <option value="#054F77">Verde</option>
@@ -240,12 +246,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 <div class="inputWrapp">
                     <label for="start">Início</label>
-                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+                    <input type="date" name="start" id="start" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
                     <label for="end">Término</label>
-                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+                    <input type="date" name="end" id="end" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
@@ -263,22 +269,15 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 </div>
 
-
                 <div class="inputWrapp">
                     <label for="elaborado_por">Elaborado por:</label>
-
-                    <select class="inputAtividades" name="elaborado_por[]" id="elaborado_por"  multiple>
-
-                        <?php foreach ($usuarios as $usuario) : ?>
-                            <option value="<?php echo $usuario['username']; ?>">
-                                <?php echo $usuario['username']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                        
-
+                    <select name="elaborado_por" id="elaborado_por" class="form-control">
+                        <option value="">Selecione um usuário</option>
+                        <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
+                            <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['username']); ?></option>
+                        <?php endwhile; ?>
                     </select>
                 </div>
-
 
                 <div class="inputWrapp">
                     <label for="funcao">Função</label>
@@ -290,6 +289,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         </form>
     </div>
 
+
+    <div class="container mt-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar missão por motivação, participantes ou elaborador..." onkeyup="pesquisarMissions()">
+    </div>
 
 
     <!-- TABELA de  visualizar missões  -->
@@ -337,8 +340,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                         <dt class="col-sm-3">ID:</dt>
                         <dd class="col-sm-9"><span id="idId"></span></dd>
 
-                        <dt class="col-sm-3">ORD:</dt>
-                        <dd class="col-sm-9"><span id="idOrd"></span></dd>
 
                         <dt class="col-sm-3">Cor:</dt>
                         <dd class="col-sm-9"><span id="idColor"></span></dd>
@@ -384,11 +385,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                         <input type="hidden" name="id" id="editid">
 
-                        <!--editar ORD-->
-                        <div class="mb-3">
-                            <label for="ord" class="col-form-label">ORD:</label>
-                            <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite o titulo">
-                        </div>
 
                          <!--editar data inicio-->
                         <div class="mb-3">
@@ -416,11 +412,30 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <input type="text" name="participantes" class="form-control" id="editParticipantes" placeholder="Digite o nome">
                          </div>
 
+
+                         <div class="mb-3">
+    <label for="editElaboradoPor" class="col-form-label">Elaborado por:</label>
+    <select name="elaborado_por" class="form-control" id="editElaboradoPor">
+        <option value=""></option>
+        <?php
+        include "../conexao.php";
+        $query = "SELECT id, username FROM policiais";
+        $result = $conn->query($query);
+        while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
+            <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['username']); ?></option>
+        <?php endwhile; ?>
+    </select>
+</div>
+
+
                         <!--editar Função-->
                         <div class="mb-3">
                             <label for="funcao" class="col-form-label">Função:</label>
                             <input type="text" name="funcao" class="form-control" id="editFuncao" placeholder="Digite o nome">
                          </div>
+
+
+
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
@@ -456,6 +471,19 @@ $is_owner = ($_SESSION["permissao"] === "owner");
     
 
     <script>
+
+function pesquisarMissions() {
+    let termo = document.getElementById("searchInput").value;
+
+    fetch(`pesquisar_missoes.php?termo=${termo}`)
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector(".listar_missions").innerHTML = data;
+        })
+        .catch(error => console.error("Erro ao buscar missões:", error));
+}
+
+
         const msgAlerta = document.getElementById("msgAlerta");
         const editForm = document.getElementById("edit-usuario-form");
         const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
@@ -463,27 +491,32 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         
         //java pra enviar formulario
         const form = document.querySelector('#form');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const dadosDoForm = new FormData (form);
-            
-            dadosDoForm.append("add", 1);
 
-            const dados = await fetch("cadastrar_missoes.php", {
-                method:"POST",
-                body: dadosDoForm,
-        
-        });
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const dadosDoForm = new FormData(form);
+    dadosDoForm.append("add", 1);
 
-        //java pra mostrar a tabela na tela
-       const resposta =  await dados.json();
-        // Recarregar a página após o envio do formulário
-        if (!resposta.erro) {
-             window.location.reload();
-         }
-        });
+    const dados = await fetch("cadastrar_missoes.php", {
+        method: "POST",
+        body: dadosDoForm,
+    });
+
+    const resposta = await dados.json();
+    
+    if (resposta.erro) {
+        document.getElementById("msgAlerta").innerHTML = `<div class="alert alert-danger">${resposta.msg}</div>`;
+    } else {
+        document.getElementById("msgAlerta").innerHTML = `<div class="alert alert-success">${resposta.msg}</div>`;
+        
+        // Aguarda 2 segundos para mostrar a mensagem antes de recarregar
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    }
+});
+
 
 // JavaScript para navegar na tabela de missões sem rolar para o topo
 const tbody = document.querySelector(".listar_missions");
@@ -502,9 +535,7 @@ const listarMissions = async (pagina) => {
     // Restaura a posição da rolagem após a atualização da tabela
     window.scrollTo(0, scrollPosition);
 
-    // Ou, se você quiser rolar para um elemento específico na tabela:
-    // const table = document.getElementById('sua-tabela-id');
-    // table.scrollIntoView({ behavior: 'smooth' });
+
 };
 
 // Chama a função para carregar a lista de missões quando a página é carregada
@@ -515,30 +546,35 @@ listarMissions(1);
 
         //javaSc para visualizar pessoa da tabela
         
-        
-        async function visualizarMissoes(id){
-            
-            const dados = await fetch("visualizarMissions.php?id=" + id);
-            const resposta = await dados.json();
-            console.log(resposta);
+        async function visualizarMissoes(id) {
+    try {
+        const response = await fetch(`visualizarMissions.php?id=${id}`);
+        const text = await response.text(); // Captura a resposta bruta
 
-            if(resposta['erro']){
-                msgAlerta.innerHTML = resposta['msg']
-            }else{
-                const viswModal = new bootstrap.Modal(document.getElementById("visualizarMissions"));
-                viswModal.show();
+        console.log("Resposta bruta:", text); // Veja se há HTML antes do JSON
 
-                document.getElementById("idId").innerHTML = resposta['dados'].id
-                document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
-                document.getElementById("idType").innerHTML = resposta['dados'].tipo;
-                document.getElementById("idColor").innerHTML = resposta['dados'].color
-                document.getElementById("idStart").innerHTML = resposta['dados'].start
-                document.getElementById("idEnd").innerHTML = resposta['dados'].end
-                document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
-                document.getElementById("idParticipantes").innerHTML = resposta['dados'].participantes;
-                document.getElementById("idFuncao").innerHTML = resposta['dados'].funcao;
-            }
-         }
+        const data = JSON.parse(text); // Converte manualmente para JSON
+
+        if (data.erro) {
+            msgAlerta.innerHTML = data.msg;
+        } else {
+            const viswModal = new bootstrap.Modal(document.getElementById("visualizarMissions"));
+            viswModal.show();
+
+            document.getElementById("idId").innerHTML = data.dados.id;
+            document.getElementById("idType").innerHTML = data.dados.tipo;
+            document.getElementById("idStart").innerHTML = new Date(data.dados.start).toLocaleDateString('pt-BR');
+document.getElementById("idEnd").innerHTML = new Date(data.dados.end).toLocaleDateString('pt-BR');
+
+            document.getElementById("idMotivacao").innerHTML = data.dados.motivacao;
+            document.getElementById("idParticipantes").innerHTML = data.dados.participantes;
+            document.getElementById("idFuncao").innerHTML = data.dados.funcao;
+        }
+    } catch (error) {
+        console.error("Erro ao processar JSON:", error);
+    }
+}
+
  
 
 
@@ -546,25 +582,36 @@ listarMissions(1);
 
         //java pra editar formulario
 
-        async function editMissoes(id){
-            const dados = await fetch("visualizarMissions.php?id=" + id);
-            const resposta = await dados.json();
-            //console.log(resposta);
-        
-            if(resposta['erro']){
-                alert('erro usuario não encontrado');
-            }else{
-                const editModal =  new bootstrap.Modal(document.getElementById("editUsuarioModal"));
-                editModal.show();
-                document.getElementById("editid").value = resposta['dados'].id
-                document.getElementById("editOrd").value = resposta['dados'].ord;
-                document.getElementById("editStart").value = resposta['dados'].start
-                document.getElementById("editEnd").value = resposta['dados'].end
-                document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
-                document.getElementById("editParticipantes").value = resposta['dados'].participantes;
-                document.getElementById("editFuncao").value = resposta['dados'].funcao;
-            }
+        async function editMissoes(id) {
+    try {
+        const response = await fetch("visualizarMissions.php?id=" + id);
+        const resposta = await response.json();
+
+        if (resposta.erro) {
+            alert("Erro: Missão não encontrada.");
+            return;
         }
+
+        const editModal = new bootstrap.Modal(document.getElementById("editUsuarioModal"));
+        editModal.show();
+
+        document.getElementById("editid").value = resposta.dados.id;
+        document.getElementById("editStart").value = resposta.dados.start;
+        document.getElementById("editEnd").value = resposta.dados.end;
+        document.getElementById("editMotivacao").value = resposta.dados.motivacao;
+        document.getElementById("editParticipantes").value = resposta.dados.participantes;
+        document.getElementById("editFuncao").value = resposta.dados.funcao;
+
+        // Preencher o campo "Elaborado por"
+        const elaboradoSelect = document.getElementById("editElaboradoPor");
+        elaboradoSelect.value = resposta.dados.elaborado_por_id;
+
+    } catch (error) {
+        console.error("Erro ao carregar dados para edição:", error);
+    }
+}
+
+
 
 
         editForm.addEventListener("submit", async (e) => {
