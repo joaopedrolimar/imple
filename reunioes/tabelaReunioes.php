@@ -1,21 +1,23 @@
+<!--/reunioes/tabelaReunioes.php-->
 <?php
-
 include_once "../conexao.php";
 
 $pagina = filter_input(INPUT_GET, "pagina", FILTER_SANITIZE_NUMBER_INT);
 
 if (!empty($pagina)) {
-
-    // Calcular o início de visualização
-    $qnt_reunioes_pg = 10; // Quantidade de tabelas visualizadas por página
+    $qnt_reunioes_pg = 10;
     $inicio = ($pagina * $qnt_reunioes_pg) - $qnt_reunioes_pg;
 
-    $query_reunioes = "SELECT  id, tipo,  color, start, end, motivacao, participantes FROM reunioes ORDER BY id ASC LIMIT $inicio, $qnt_reunioes_pg";
+    $query_reunioes = "SELECT id, tipo, color, DATE(start) AS start, DATE(end) AS end, motivacao, participantes 
+                       FROM reunioes 
+                       ORDER BY id ASC 
+                       LIMIT $inicio, $qnt_reunioes_pg";
+                       
     $resultado_reunioes = $conn->prepare($query_reunioes);
     $resultado_reunioes->execute();
 
     $dados_reunioes = "<div class='table-responsive'>
-        <table class='table table-striped table-bordered table-bordered border-white table-dark'>
+        <table class='table table-striped table-bordered table-dark'>
             <thead>
                 <tr>
                     <th scope='col'>ID</th>
@@ -31,32 +33,26 @@ if (!empty($pagina)) {
             <tbody>";
 
     while ($row_reunioes = $resultado_reunioes->fetch(PDO::FETCH_ASSOC)) {
-
         extract($row_reunioes);
-
         $dados_reunioes .= "<tr>
             <td>$id</td>
             <td>$tipo</td>
             <td>$color</td>
-            <td>$start</td>
-            <td>$end</td>
+            <td>" . date('d/m/Y', strtotime($start)) . "</td>
+            <td>" . date('d/m/Y', strtotime($end)) . "</td>
             <td>$motivacao</td>
             <td>$participantes</td>
-
             <td>
-            <div class='btn-group' role='group' aria-label='Ações'>
-                <button id='<?php echo $id; ?>' class='btn btn-success btn-sm' onclick='visualizarReunioes($id)'>Visualizar</button>
-                <button id='<?php echo $id; ?>' class='btn btn-warning btn-sm' onclick='editReunioes($id)'>Editar</button>
-                <button id='<?php echo $id; ?>' class='btn btn-danger btn-sm' onclick='apagarReunioes($id)'>Deletar</button>
-            </div>
+                <div class='btn-group' role='group'>
+                    <button class='btn btn-success btn-sm' onclick='visualizarReunioes($id)'>Visualizar</button>
+                    <button class='btn btn-warning btn-sm' onclick='editReunioes($id)'>Editar</button>
+                    <button class='btn btn-danger btn-sm' onclick='apagarReunioes($id)'>Deletar</button>
+                </div>
             </td>
         </tr>";
     }
 
-    $dados_reunioes .= "
-            </tbody>
-        </table>
-    </div>";
+    $dados_reunioes .= "</tbody></table></div>";
 
     // Paginação
     $query_paginas = "SELECT COUNT(id) AS num_result FROM reunioes";

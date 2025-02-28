@@ -1,3 +1,4 @@
+<!--/afastamentos/cadastrarAfastamentos.php-->
 <?php
 
 include_once "../conexao.php";

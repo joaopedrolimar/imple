@@ -61,6 +61,7 @@ if (!empty($termo)) {
         }
 
         $dados_missions .= "</tbody></table></div>";
+
         echo $dados_missions;
     } else {
         echo "<div class='alert alert-warning' role='alert'>Nenhuma missão encontrada.</div>";
@@ -69,3 +70,4 @@ if (!empty($termo)) {
     echo "<div class='alert alert-danger' role='alert'>Digite um termo para pesquisar.</div>";
 }
 ?>
+

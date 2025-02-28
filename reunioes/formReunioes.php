@@ -1,3 +1,4 @@
+<!--/reunioes/formReunioes.php-->
 <?php
 session_start();
 if (!isset($_SESSION["user_id"])) {
@@ -231,12 +232,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
     <div class="inputWrapp">
         <label for="start">Início</label>
-        <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+        <input type="date" name="start" id="start" class="inputAfastamentos" required>
     </div>
 
     <div class="inputWrapp">
         <label for="end">Término</label>
-        <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+        <input type="date" name="end" id="end" class="inputAfastamentos" required>
     </div>
 
     <div class="inputWrapp">
@@ -254,6 +255,10 @@ $is_owner = ($_SESSION["permissao"] === "owner");
    
 </form>
 </div>
+
+<input type="text" id="pesquisaReuniao" class="form-control" placeholder="Pesquisar por ID, motivação ou participantes...">
+<span id="msgAlertaPesquisa"></span>
+
 
         <!-- TABELA de visualizar missões -->
         <div class="container ">
@@ -328,12 +333,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                             <div class="mb-3">
                                 <label for="start" class="col-form-label">Início:</label>
-                                <input type="text" name="start" class="form-control" id="editStart" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                                <input type="date" name="start" class="form-control" id="editStart">
                             </div>
 
                             <div class="mb-3">
                                 <label for="end" class="col-form-label">Fim:</label>
-                                <input type="text" name="end" class="form-control" id="editEnd" onfocus="this.type='datetime-local'" onblur="if (!this.value) this.type='text'">
+                                <input type="date" name="end" class="form-control" id="editEnd">
                             </div>
 
                             
@@ -373,6 +378,21 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
+
+document.getElementById("pesquisaReuniao").addEventListener("keyup", async function() {
+    let termo = this.value.trim();
+
+    if (termo.length > 0) {
+        const response = await fetch(`pesquisar_reunioes.php?termo=${termo}`);
+        const tableHtml = await response.text();
+        document.querySelector(".listar_missions").innerHTML = tableHtml;
+    } else {
+        listarMissions(1); // Recarrega todas as reuniões quando o campo de pesquisa estiver vazio
+    }
+});
+
+
+
             const msgAlerta = document.getElementById("msgAlerta");
             const editForm = document.getElementById("edit-reunioes-form");
             const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
@@ -429,27 +449,31 @@ listarMissions(1);
 
 
             // JavaScript para visualizar reunião da tabela
-            async function visualizarReunioes(id){
-                const data = await fetch("visualizarReunioes.php?id=" + id);
-                const resposta = await data.json();
-                console.log(resposta);
+            async function visualizarReunioes(id) {
+    try {
+        const response = await fetch("visualizarReunioes.php?id=" + id);
+        const resposta = await response.json();
 
-                if(resposta['erro']){
-                    msgAlerta.innerHTML = resposta['msg']
-                } else {
-                    const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
-                    viswModal.show();
+        if (resposta.erro) {
+            alert(resposta.msg);
+        } else {
+            const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
+            viswModal.show();
 
-                    document.getElementById("idType").innerHTML = resposta['dados'].tipo;
-                    document.getElementById("idId").innerHTML = resposta['dados'].id;
-                    document.getElementById("idColor").innerHTML = resposta['dados'].color;
-                    document.getElementById("idStart").innerHTML = resposta['dados'].start;
-                    document.getElementById("idEnd").innerHTML = resposta['dados'].end;
-                    document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
-                    document.getElementById("idParticipantes").innerHTML = resposta['dados'].participantes;
+            document.getElementById("idType").innerHTML = resposta.dados.tipo;
+            document.getElementById("idId").innerHTML = resposta.dados.id;
+            document.getElementById("idColor").innerHTML = resposta.dados.color;
+            document.getElementById("idStart").innerHTML = resposta.dados.start;
+            document.getElementById("idEnd").innerHTML = resposta.dados.end;
+            document.getElementById("idMotivacao").innerHTML = resposta.dados.motivacao;
+            document.getElementById("idParticipantes").innerHTML = resposta.dados.participantes;
+        }
+    } catch (error) {
+        console.error("Erro ao buscar dados da reunião:", error);
+        alert("Erro ao carregar os dados da reunião. Tente novamente.");
+    }
+}
 
-                }
-            }
 
             // JavaScript para editar reunião
             async function editReunioes(id){

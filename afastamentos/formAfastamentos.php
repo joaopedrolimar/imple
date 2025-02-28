@@ -1,3 +1,4 @@
+<!--/afastamentos/formAfastamentos.php-->
 <?php
 session_start();
 if (!isset($_SESSION["user_id"])) {
@@ -224,10 +225,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                 </div>
 
 
-                <div class="inputWrapp">
-                    <label for="ord">ORD:</label>
-                    <input type="text" name="ord" id="ord" class="inputAfastamentos" required>
-                </div>
+      
 
                 <p id="color">Color:</p>
                 <select name="color" class="inputAfastamentos" id="color">
@@ -236,12 +234,12 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                 <div class="inputWrapp">
                     <label for="start">Início</label>
-                    <input type="datetime-local" name="start" id="start" class="inputAfastamentos" required>
+                    <input type="date" name="start" id="start" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
                     <label for="end">Término</label>
-                    <input type="datetime-local" name="end" id="end" class="inputAfastamentos" required>
+                    <input type="date" name="end" id="end" class="inputAfastamentos" required>
                 </div>
 
                 <div class="inputWrapp">
@@ -264,6 +262,11 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                
             </form>
         </div>
+        
+
+        <input type="text" id="pesquisaAfastamento" class="form-control"                placeholder="Pesquisar por Nome ou Motivação...">
+        <span id="msgAlertaPesquisa"></span>
+
 
         <!-- Tabela de Afastamentos -->
         <div class="container ">
@@ -302,8 +305,7 @@ $is_owner = ($_SESSION["permissao"] === "owner");
                             <dd class="col-sm-9"><span id="idType"></span></dd>
                             <dt class="col-sm-3">ID:</dt>
                             <dd class="col-sm-9"><span id="idId"></span></dd>
-                            <dt class="col-sm-3">ORD:</dt>
-                            <dd class="col-sm-9"><span id="idOrd"></span></dd>
+
                             <dt class="col-sm-3">Cor:</dt>
                             <dd class="col-sm-9"><span id="idColor"></span></dd>
                             <dt class="col-sm-3">Início:</dt>
@@ -339,10 +341,6 @@ $is_owner = ($_SESSION["permissao"] === "owner");
 
                             <input type="hidden" name="id" id="editid">
 
-                            <div class="mb-3">
-                                <label for="ord" class="col-form-label">ORD:</label>
-                                <input type="text" name="ord" class="form-control" id="editOrd" placeholder="Digite a ORD">
-                            </div>
 
 
                             <div class="mb-3">
@@ -392,6 +390,28 @@ $is_owner = ($_SESSION["permissao"] === "owner");
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
         <script>
+
+
+
+document.getElementById("pesquisaAfastamento").addEventListener("keyup", async function () {
+    let termo = this.value.trim();
+
+    if (termo.length > 0) {
+        const response = await fetch(`pesquisar_afastamentos.php?termo=${termo}`);
+        const tableHtml = await response.text();
+
+        let tabela = document.querySelector(".listar_missions");
+        if (tabela) {
+            tabela.innerHTML = tableHtml;
+        } else {
+            console.error("Elemento .listar_afastamentos não encontrado.");
+        }
+    } else {
+        listarAfastamentos(1);
+    }
+});
+
+
             const msgAlerta = document.getElementById("msgAlerta");
             const editForm = document.getElementById("edit-reunioes-form");
             const msgAlertaErroEdit = document.getElementById("msgAlertaErroEdit");
@@ -452,56 +472,49 @@ listarMissions(1);
 
             
 
-            // JavaScript para visualizar afastamento da tabela
-            async function visualizarReunioes(id){
-                const data = await fetch("visualizarAfastamentos.php?id=" + id);
-                const resposta = await data.json();
-                console.log(resposta);
+// Função para visualizar afastamento
+async function visualizarAfastamentos(id) {
+    const response = await fetch(`visualizarAfastamentos.php?id=${id}`);
+    const data = await response.json();
 
-                if(resposta['erro']){
-                    msgAlerta.innerHTML = resposta['msg']
-                } else {
-                    const viswModal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
-                    viswModal.show();
+    if (data.erro) {
+        alert("Erro ao buscar afastamento!");
+    } else {
+        const modal = new bootstrap.Modal(document.getElementById("visualizarReunioes"));
+        modal.show();
 
-                    document.getElementById("idType").innerHTML = resposta['dados'].tipo;
-                    document.getElementById("idId").innerHTML = resposta['dados'].id;
-                    document.getElementById("idOrd").innerHTML = resposta['dados'].ord;
-                    document.getElementById("idColor").innerHTML = resposta['dados'].color;
-                    document.getElementById("idStart").innerHTML = resposta['dados'].start;
-                    document.getElementById("idEnd").innerHTML = resposta['dados'].end;
-                    document.getElementById("idMotivacao").innerHTML = resposta['dados'].motivacao;
-                    document.getElementById("idNome").innerHTML = resposta['dados'].nome;
-                    document.getElementById("idObservacao").innerHTML = resposta['dados'].observacao;
-            
-
-
-                }
-            }
+        document.getElementById("idType").innerText = data.dados.tipo;
+        document.getElementById("idId").innerText = data.dados.id;
+        document.getElementById("idColor").innerText = data.dados.color;
+        document.getElementById("idStart").innerText = data.dados.start;
+        document.getElementById("idEnd").innerText = data.dados.end;
+        document.getElementById("idMotivacao").innerText = data.dados.motivacao;
+        document.getElementById("idNome").innerText = data.dados.nome;
+        document.getElementById("idObservacao").innerText = data.dados.observacao;
+    }
+}
 
             // JavaScript para editar afastamento
-            async function editReunioes(id){
-                const data = await fetch("visualizarAfastamentos.php?id=" + id);
-                const resposta = await data.json();
-                
-                if(resposta['erro']){
-                    alert('Erro: Afastamento não encontrado');
-                } else {
-                    const editModal = new bootstrap.Modal(document.getElementById("editReunioesModal"));
-                    editModal.show();
+// Função para editar afastamento
+async function editAfastamentos(id) {
+    const response = await fetch(`visualizarAfastamentos.php?id=${id}`);
+    const data = await response.json();
 
-                    document.getElementById("editid").value = resposta['dados'].id;
-                    document.getElementById("editOrd").value = resposta['dados'].ord;
-                    document.getElementById("editStart").value = resposta['dados'].start;
-                    document.getElementById("editEnd").value = resposta['dados'].end;
-                    document.getElementById("editMotivacao").value = resposta['dados'].motivacao;
-                    document.getElementById("editNome").value = resposta['dados'].nome;
-                    document.getElementById("editObservacao").value = resposta['dados'].observacao;
-                    
+    if (data.erro) {
+        alert("Erro: Afastamento não encontrado!");
+    } else {
+        const modal = new bootstrap.Modal(document.getElementById("editReunioesModal"));
+        modal.show();
 
-                }
-            }
-
+        document.getElementById("editid").value = data.dados.id;
+        document.getElementById("editOrd").value = data.dados.ord;
+        document.getElementById("editStart").value = data.dados.start;
+        document.getElementById("editEnd").value = data.dados.end;
+        document.getElementById("editMotivacao").value = data.dados.motivacao;
+        document.getElementById("editNome").value = data.dados.nome;
+        document.getElementById("editObservacao").value = data.dados.observacao;
+    }
+}
             editForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
 
@@ -525,21 +538,21 @@ listarMissions(1);
             });
 
             // JavaScript para apagar registros
-            async function apagarReunioes(id){
-                const confirmar = confirm("Tem certeza que deseja deletar o afastamento?");
+// Função para apagar afastamento
+async function apagarAfastamentos(id) {
+    const confirmar = confirm("Tem certeza que deseja deletar este afastamento?");
+    if (confirmar) {
+        const response = await fetch(`apagarAfastamentos.php?id=${id}`);
+        const data = await response.json();
 
-                if (confirmar == true){
-                    const data = await fetch('apagarAfastamentos.php?id=' + id);
-                    const resposta = await data.json();
-                    
-                    if(resposta['erro']){
-                        msgAlerta.innerHTML = resposta['msg'];
-                    } else {
-                        msgAlerta.innerHTML = resposta['msg'];
-                        listarMissions(1);
-                    }
-                }
-            }
+        if (data.erro) {
+            alert("Erro ao excluir afastamento!");
+        } else {
+            alert("Afastamento apagado com sucesso!");
+            location.reload(); // Atualiza a página para refletir a exclusão
+        }
+    }
+}
 
                // Solicitação AJAX para obter os dados das reuniões
 fetch('../get_afastamentos_data.php')
