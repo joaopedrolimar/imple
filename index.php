@@ -153,16 +153,27 @@ $usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
 
-    <!-- Botões com os nomes dos usuários centralizados e com espaçamento -->
-    <div class="container mt-4">
-        <div class="row justify-content-center">
+<!-- Card Status dos Usuários -->
+<div class="card my-3" id="statusUsuariosCard">
+          <div class="card-header">
+            <h5 class="mb-0">Status dos Usuários</h5>
+          </div>
+          <ul class="list-group list-group-flush" id="listaStatusUsuarios">
+            <!-- Os status serão inseridos aqui via JavaScript -->
+          </ul>
+        </div>
+        
+        <!-- Botões de usuário (opcional) -->
+        <div class="row justify-content-center mt-4">
             <?php foreach ($usuarios as $usuario) : ?>
                 <div class="col-auto mb-2">
                     <a href="#" class="btn btn-primary user-button"><?= $usuario['username'] ?></a>
                 </div>
             <?php endforeach; ?>
         </div>
-    </div> 
+
+
+
 
 
     <!-- Modal Visualizar -->
@@ -194,6 +205,8 @@ $usuarios = $result_usuarios->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     
+
+
 
     
 <div class="chart-container">
@@ -409,14 +422,37 @@ function renderAbsencesChart(data) {
         }
     });
 }
-
-
-
-
-
-
-
 </script>
+
+<!-- Script para carregar o status -->
+<script>
+    async function carregarStatusUsuarios() {
+        try {
+            const response = await fetch('consulta_status.php'); // ajuste o caminho se necessário
+            const usuarios = await response.json();
+
+            const lista = document.getElementById('listaStatusUsuarios');
+            lista.innerHTML = '';
+
+            usuarios.forEach(usuario => {
+                const li = document.createElement('li');
+                li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                li.innerHTML = `<span>${usuario.username}</span><span class="badge bg-info">${usuario.status}</span>`;
+                lista.appendChild(li);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar status dos usuários:', error);
+        }
+    }
+
+    // Carrega status assim que a página abrir
+    carregarStatusUsuarios();
+
+    // Atualiza a cada 30 segundos (opcional)
+    setInterval(carregarStatusUsuarios, 30000);
+    </script>
+    
+
 
 
 </body>

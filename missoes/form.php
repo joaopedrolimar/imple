@@ -16,6 +16,15 @@ include '../conexao.php';
 $query = "SELECT id, username FROM policiais"; 
   // Ajuste 'usuarios' para o nome correto da tabela
 $result = $conn->query($query);
+
+// Query para campo 'elaborado_por'
+$queryElaborado = "SELECT id, username FROM policiais";
+$resultElaborado = $conn->query($queryElaborado);
+
+// Query para campo 'participantes'
+$queryPart = "SELECT id, username FROM policiais";
+$stmtPart = $conn->prepare($queryPart);
+$stmtPart->execute();
 ?>
 
 
@@ -133,7 +142,7 @@ $result = $conn->query($query);
 
 <body>
 
-
+<!-- Começo do Nav -->
 <nav class="navbar navbar-dark bg-dark fixed-top">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand d-flex align-items-center" href="/imple/index.php">
@@ -143,7 +152,6 @@ $result = $conn->query($query);
         <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- Restante do seu código -->
     </div>
 </nav>
 
@@ -201,7 +209,7 @@ $result = $conn->query($query);
     </div>
   </div>
 </nav>
-
+<!-- Fim do Nav -->
 
 
 
@@ -238,57 +246,65 @@ $result = $conn->query($query);
               
 
 
-
+                <!-- Cor-->
                 <p id="color">Color:</p>
                 <select name="color" class="inputAfastamentos" id="color">
                     <option value="#054F77">Verde</option>
                 </select>
 
+                <!-- Inicio-->
                 <div class="inputWrapp">
                     <label for="start">Início</label>
                     <input type="date" name="start" id="start" class="inputAfastamentos" required>
                 </div>
 
+                <!--Termino -->
                 <div class="inputWrapp">
                     <label for="end">Término</label>
                     <input type="date" name="end" id="end" class="inputAfastamentos" required>
                 </div>
 
+                <!-- Motivação -->
                 <div class="inputWrapp">
                     <label for="motivacao">Motivação</label>
                     <input type="text" name="motivacao" id="motivacao" class="inputAfastamentos" required>
                 </div>
 
-
-
                 <!--PARTICIPANTES-->
                 <div class="inputWrapp">
-
                     <label for="participantes">Participantes</label>
-                    <input type="text" name="participantes" id="participantes" class="inputAfastamentos">
-
+                    <select name="participantes[]" id="participantes" class="form-control" multiple>
+                        <?php while ($row_part = $stmtPart->fetch(PDO::FETCH_ASSOC)) : ?>
+                            <option value="<?= $row_part['id'] ?>"><?= htmlspecialchars($row_part['username']) ?></option>
+                        <?php endwhile; ?>
+                    </select>
+                    <small>(Segure Ctrl ou Shift para escolher vários)</small>
                 </div>
-
+                
+                <!--Elaborado por -->
                 <div class="inputWrapp">
                     <label for="elaborado_por">Elaborado por:</label>
                     <select name="elaborado_por" id="elaborado_por" class="form-control">
                         <option value="">Selecione um usuário</option>
-                        <?php while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
+                        <?php while ($row = $resultElaborado->fetch(PDO::FETCH_ASSOC)) : ?>
                             <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['username']); ?></option>
                         <?php endwhile; ?>
                     </select>
                 </div>
 
+                <!--Função -->
                 <div class="inputWrapp">
                     <label for="funcao">Função</label>
                     <input type="text" name="funcao" id="funcao" class="inputAfastamentos">
                 </div>
 
-
+                <!--Botão de enviar- -->
                 <button type="submit"  class="enviar btn btn-primary">enviar</button>
         </form>
     </div>
+<!--Fim do Formulario de missoes -->
 
+<!-- -->
 
     <div class="container mt-3">
         <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar missão por motivação, participantes ou elaborador..." onkeyup="pesquisarMissions()">
@@ -304,20 +320,13 @@ $result = $conn->query($query);
                 </div>
             </div>
         </div>
-     
-
         <div class="row ">
-
             <div class="col-lg-12">
-
                 <span class="listar_missions"></span>
-                
             </div>
-
         </div>
-
     </div>
-
+    <!--Fim da tabela de missões- -->
 
 
 
@@ -414,32 +423,28 @@ $result = $conn->query($query);
 
 
                          <div class="mb-3">
-    <label for="editElaboradoPor" class="col-form-label">Elaborado por:</label>
-    <select name="elaborado_por" class="form-control" id="editElaboradoPor">
-        <option value=""></option>
-        <?php
-        include "../conexao.php";
-        $query = "SELECT id, username FROM policiais";
-        $result = $conn->query($query);
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
-            <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['username']); ?></option>
-        <?php endwhile; ?>
-    </select>
-</div>
-
+                            <label for="editElaboradoPor" class="col-form-label">Elaborado por:</label>
+                            <select name="elaborado_por" class="form-control" id="editElaboradoPor">
+                                <option value=""></option>
+                                <?php
+                                include "../conexao.php";
+                                $query = "SELECT id, username FROM policiais";
+                                $result = $conn->query($query);
+                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) : ?>
+                                    <option value="<?= $row['id']; ?>"><?= htmlspecialchars($row['username']); ?></option>
+                                <?php endwhile; ?>
+                            </select>
+                        </div>
 
                         <!--editar Função-->
                         <div class="mb-3">
                             <label for="funcao" class="col-form-label">Função:</label>
                             <input type="text" name="funcao" class="form-control" id="editFuncao" placeholder="Digite o nome">
-                         </div>
-
-
-
+                        </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Fechar</button>
-                            <input type="submit" class="btn btn-outline-warning btn-sm" id="edit-usuario-btn" value="Salvar" />
+                            <input type="submit" class="btn btn-outline-warning btn-sm" id="edit-usuario-btn" value="Salvar">
                         </div>
                     </form>
                 </div>
@@ -448,19 +453,11 @@ $result = $conn->query($query);
     </div>
 
     
-
-
-
     <div class="chart-container">
         <canvas id="missionsColumnChart"></canvas>
     </div>
 
    
-
-
-
-
-
 
 
 
@@ -482,7 +479,6 @@ function pesquisarMissions() {
         })
         .catch(error => console.error("Erro ao buscar missões:", error));
 }
-
 
         const msgAlerta = document.getElementById("msgAlerta");
         const editForm = document.getElementById("edit-usuario-form");
