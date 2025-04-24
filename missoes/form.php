@@ -133,10 +133,12 @@ $stmtPart->execute();
             margin: 0 auto; /* Centraliza o gráfico na página */
             margin-top: 20px; /* Espaçamento superior para separar do calendário */
         }
+        
 
 
 
     </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -454,16 +456,51 @@ $stmtPart->execute();
 
     
     <div class="chart-container">
-        <canvas id="missionsColumnChart"></canvas>
+        <div class="card shadow rounded p-4">
+            <h5 class="mb-4 text-center">📊 Missões por Mês</h5>
+            <canvas id="missionsColumnChart" style="height: 300px;"></canvas>
+        </div>
     </div>
 
+    <div class="chart-container">
+        <div class="card shadow rounded p-4">
+            <h5 class="text-center">📅 Missões por Ano</h5>
+            <canvas id="missionsByYearChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-container">
+  <div class="card shadow rounded p-4">
+    <h5 class="text-center">🧑‍🔧 Missões por Função</h5>
+    <canvas id="missionsByFuncaoChart"></canvas>
+  </div>
+</div>
+
+<div class="chart-container">
+  <div class="card shadow rounded p-4">
+    <h5 class="text-center">📆 Missões por Mês (Selecionar Ano)</h5>
+    <select id="selectAno" class="form-select mb-3">
+        <option value="2023">2023</option>
+        <option value="2024" selected>2024</option>
+        <option value="2025">2025</option>
+    </select>
+    <canvas id="missionsByMonthChart"></canvas>
+  </div>
+</div>
+
+<div class="chart-container">
+  <div class="card shadow rounded p-4">
+    <h5 class="text-center">🤝 Elaboradas vs Participadas</h5>
+    <canvas id="elaboradasVsParticipadasChart"></canvas>
+  </div>
+</div>
    
 
 
 
     <!-- JavaScript missões  -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-    <script src="js/bootstrap5/index.global.min.js"></script>
+   
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 
@@ -490,28 +527,44 @@ function pesquisarMissions() {
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const dadosDoForm = new FormData(form);
     dadosDoForm.append("add", 1);
 
-    const dados = await fetch("cadastrar_missoes.php", {
-        method: "POST",
-        body: dadosDoForm,
-    });
+    try {
+        const resposta = await fetch("cadastrar_missoes.php", {
+            method: "POST",
+            body: dadosDoForm
+        });
 
-    const resposta = await dados.json();
-    
-    if (resposta.erro) {
-        document.getElementById("msgAlerta").innerHTML = `<div class="alert alert-danger">${resposta.msg}</div>`;
-    } else {
-        document.getElementById("msgAlerta").innerHTML = `<div class="alert alert-success">${resposta.msg}</div>`;
-        
-        // Aguarda 2 segundos para mostrar a mensagem antes de recarregar
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
+        const resultado = await resposta.json();
+
+        if (resultado.erro) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro!',
+                text: resultado.msg.replace(/<[^>]*>/g, '')
+            });
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: 'Missão cadastrada com sucesso!',
+                showConfirmButton: false,
+                timer: 2000,
+                didClose: () => {
+                    window.location.reload();
+                }
+            });
+        }
+    } catch (err) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro inesperado',
+            text: 'Não foi possível completar a operação.'
+        });
     }
 });
+
 
 
 // JavaScript para navegar na tabela de missões sem rolar para o topo
@@ -570,10 +623,6 @@ document.getElementById("idEnd").innerHTML = new Date(data.dados.end).toLocaleDa
         console.error("Erro ao processar JSON:", error);
     }
 }
-
- 
-
-
 
 
         //java pra editar formulario
@@ -665,31 +714,66 @@ document.getElementById("idEnd").innerHTML = new Date(data.dados.end).toLocaleDa
 
 
     // Função para renderizar o gráfico de missões (colunas)
-function renderMissionsColumnChart(data) {
-    // Obtém o contexto do canvas do gráfico
+    function renderMissionsColumnChart(data) {
     const ctx = document.getElementById('missionsColumnChart').getContext('2d');
 
-    // Cria o gráfico de colunas
-    const missionsColumnChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: {
-            // Labels para o eixo X (meses)
             labels: Object.keys(data),
             datasets: [{
-                label: 'Missões por mês',
-                // Dados para o eixo Y (número de missões)
+                label: 'Missões',
                 data: Object.values(data),
-                // Personalizações adicionais do gráfico
-                backgroundColor: 'rgba(54, 162, 235, 0.9)',
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
+                borderWidth: 2,
+                borderRadius: 5,
+                barThickness: 30
             }]
         },
         options: {
-            // Personalizações adicionais do gráfico, se necessário
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#333',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    borderColor: '#54a0ff',
+                    borderWidth: 1
+                },
+                title: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#333',
+                        font: {
+                            weight: 'bold'
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    },
+                    ticks: {
+                        color: '#333'
+                    }
+                }
+            }
         }
     });
 }
+
 
 // Solicitação AJAX para obter os dados das missões
 fetch('../get_missions_data.php')
@@ -702,11 +786,105 @@ fetch('../get_missions_data.php')
         console.error('Erro ao obter dados das missões:', error);
     });
 
+    // Missões por Ano
+fetch("../get_missions_by_year.php")
+  .then(res => res.json())
+  .then(data => {
+    new Chart(document.getElementById("missionsByYearChart"), {
+      type: "line",
+      data: {
+        labels: Object.keys(data),
+        datasets: [{
+          label: "Missões por Ano",
+          data: Object.values(data),
+          backgroundColor: "rgba(75, 192, 192, 0.3)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          fill: true,
+          tension: 0.3
+        }]
+      }
+    });
+  });
 
+// Missões por Função
+fetch("../get_missions_by_funcao.php")
+  .then(res => res.json())
+  .then(data => {
+    new Chart(document.getElementById("missionsByFuncaoChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(data),
+        datasets: [{
+          label: "Funções",
+          data: Object.values(data),
+          backgroundColor: [
+            "#4e73df", "#1cc88a", "#36b9cc", "#f6c23e", "#e74a3b"
+          ]
+        }]
+      }
+    });
+  });
+
+// Missões por Mês com Filtro por Ano
+const selectAno = document.getElementById("selectAno");
+const renderMonthlyChart = (ano) => {
+  fetch(`../get_missions_by_month.php?ano=${ano}`)
+    .then(res => res.json())
+    .then(data => {
+      new Chart(document.getElementById("missionsByMonthChart"), {
+        type: "bar",
+        data: {
+          labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
+          datasets: [{
+            label: `Missões em ${ano}`,
+            data: Object.values(data),
+            backgroundColor: "rgba(255, 99, 132, 0.7)"
+          }]
+        }
+      });
+    });
+};
+renderMonthlyChart(selectAno.value);
+selectAno.addEventListener("change", e => renderMonthlyChart(e.target.value));
+
+// Elaboradas vs Participadas
+fetch("../get_elaboradas_vs_participadas.php")
+  .then(res => res.json())
+  .then(data => {
+    const allUsers = [...new Set([...Object.keys(data.elaboradas), ...Object.keys(data.participadas)])];
+    const elaboradas = allUsers.map(u => data.elaboradas[u] || 0);
+    const participadas = allUsers.map(u => data.participadas[u] || 0);
+
+    new Chart(document.getElementById("elaboradasVsParticipadasChart"), {
+      type: "bar",
+      data: {
+        labels: allUsers,
+        datasets: [
+          {
+            label: "Elaboradas",
+            data: elaboradas,
+            backgroundColor: "rgba(54, 162, 235, 0.7)"
+          },
+          {
+            label: "Participadas",
+            data: participadas,
+            backgroundColor: "rgba(255, 206, 86, 0.7)"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: { mode: 'index', intersect: false }
+        }
+      }
+    });
+  });
 
         
 
     </script>
+
 
     
 </body>
